@@ -3,51 +3,51 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
-use Illuminate\Http\Exception\HttpResponseException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
  */
 class BattlenetHttpClient
 {
+    /**
+     * @var Repository
+     */
+    protected $cache;
 
-	/**
-	 * @var Repository
-	 */
-	protected $cache;
+    /**
+     * @var string
+     */
+    protected $cacheKey = 'xklusive.battlenetapi.cache';
 
-	/**
-	 * @var string
-	 */
-	protected $cacheKey = 'xklusive.battlenetapi.cache';
+    /**
+     * Http client.
+     *
+     * @var object GuzzleHttp\Client
+     */
+    protected $client;
 
-	/**
-	 * Http client
-	 * @var object GuzzleHttp\Client
-	 */
-	protected $client;
-
-	/**
-	 * Game name for url prefix
-	 * @var string
-	 */
+    /**
+     * Game name for url prefix.
+     *
+     * @var string
+     */
     protected $gameParam;
 
     /**
-     * BattlnetHttpClient constructor
+     * BattlnetHttpClient constructor.
      */
     public function __construct(Repository $repository)
     {
-    	$this->cache = $repository;
+        $this->cache = $repository;
         $this->client = new Client([
             'base_uri' => $this->getApiEndPoint(),
         ]);
     }
 
     /**
-     * Make request with API url and specific URL suffix
+     * Make request with API url and specific URL suffix.
      *
      * @param string $urlSuffix API URL method
      * @param array  $options   Options
@@ -63,14 +63,14 @@ class BattlenetHttpClient
         if ($response->getStatusCode() == 200) {
             return $response;
         } else {
-        	throw new \HttpResponseException('Invalid Response');
+            throw new \HttpResponseException('Invalid Response');
         }
     }
 
     public function cache($response, $method)
     {
         if (true == $this->hasToCache()) {
-            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function() use($response) {
+            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
                 return collect(json_decode($response->getBody()->getContents()));
             });
         } else {
@@ -79,8 +79,7 @@ class BattlenetHttpClient
     }
 
     /**
-     *
-     * Get default query options from configuration file
+     * Get default query options from configuration file.
      *
      * @return array
      */
@@ -94,8 +93,10 @@ class BattlenetHttpClient
 
     /**
      * Set default option if a 'query' key is provided
-     * else create 'query' key with default options
-     * @param  array  $options
+     * else create 'query' key with default options.
+     *
+     * @param array $options
+     *
      * @return Illuminate\Support\Collection api response
      */
     private function getQueryOptions(array $options = [])
@@ -105,44 +106,47 @@ class BattlenetHttpClient
         } else {
             $result['query'] = $options + $this->getDefaultOptions();
         }
+
         return $result;
     }
 
     /**
-     * Get API domain provided in configuration
+     * Get API domain provided in configuration.
+     *
      * @return string
      */
     private function getApiEndPoint()
     {
-    	return config('battlenet-api.domain');
+        return config('battlenet-api.domain');
     }
 
     /**
-     * Get API key provided in configuration
+     * Get API key provided in configuration.
+     *
      * @return string
      */
     private function getApiKey()
     {
-    	return config('battlenet-api.api_key');
+        return config('battlenet-api.api_key');
     }
 
     /**
-     * Get API locale provided in configuration
+     * Get API locale provided in configuration.
+     *
      * @return string
      */
     private function getLocale()
     {
-    	return config('battlenet-api.locale', 'eu');
+        return config('battlenet-api.locale', 'eu');
     }
 
     private function hasToCache()
     {
-    	return config('battlenet-api.cache', true);
+        return config('battlenet-api.cache', true);
     }
 
     private function getCacheDuration()
     {
-    	return config('battlenet-api.cache_duration', 600);
+        return config('battlenet-api.cache_duration', 600);
     }
-
 }
