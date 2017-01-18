@@ -3,8 +3,8 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
-use Illuminate\Contracts\Cache\Repository;
 use Psr\Http\Message\ResponseInterface;
+use Illuminate\Contracts\Cache\Repository;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
