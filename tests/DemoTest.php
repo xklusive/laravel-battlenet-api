@@ -2,22 +2,21 @@
 
 namespace Xklusive\BattlenetApi\Test;
 
-use Xklusive\BattlenetApi\Test\TestCase;
 use Illuminate\Support\Collection;
 
 class DemoTest extends TestCase
 {
-	protected $wow;
+    protected $wow;
 
     public function setUp()
     {
         parent::setUp();
-        
+
         $this->wow = app(\Xklusive\BattlenetApi\Services\WowService::class);
     }
 
     public function testCallSuccess()
     {
-    	$this->assertInstanceOf(Collection::class, $this->wow->getAchievement(2144));
+        $this->assertInstanceOf(Collection::class, $this->wow->getAchievement(2144));
     }
 }
