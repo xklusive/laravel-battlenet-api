@@ -3,6 +3,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/xklusive/laravel-battlenet-api.svg?style=flat-square)](https://packagist.org/packages/xklusive/laravel-battlenet-api)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://travis-ci.org/xklusive/laravel-battlenet-api.svg?branch=master)](https://travis-ci.org/xklusive/laravel-battlenet-api)
 [![Code Quality](https://scrutinizer-ci.com/g/xklusive/laravel-battlenet-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/xklusive/laravel-battlenet-api/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/02f8f016-b462-4c0c-85b7-afc51b1a3b6a/mini.png)](https://insight.sensiolabs.com/projects/02f8f016-b462-4c0c-85b7-afc51b1a3b6a)
 [![StyleCI](https://styleci.io/repos/79335460/shield)](https://styleci.io/repos/79335460)
