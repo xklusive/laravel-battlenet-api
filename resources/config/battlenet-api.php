@@ -22,7 +22,6 @@ return [
 
         'api_key' => 'YOUR_API_KEY',
 
-
         /*
         |--------------------------------------------------------------------------
         | Battle.net Locale
@@ -39,7 +38,7 @@ return [
         | Battle.net api domain
         |--------------------------------------------------------------------------
         |
-        | Define the region API. 
+        | Define the region API.
         | Change [region] by the value of your choice
         | You can refer to the Battle.net API documentation https://dev.battle.net/io-docs
         | For example, if you want to request on the Europe region: 'https://eu.api.battle.net'
@@ -52,7 +51,7 @@ return [
         | Battle.net api cache
         |--------------------------------------------------------------------------
         |
-        | Define is the response body content is put in cache (default cache time is 10 hours), 
+        | Define is the response body content is put in cache (default cache time is 10 hours),
         | using the cache driver for your application as specified by your cache configuration file.
         | Set it to false if you don't want that we manage cache.
         |
@@ -69,7 +68,6 @@ return [
         |
         */
         'cache_duration' => 600,
-
 
     ],
 
