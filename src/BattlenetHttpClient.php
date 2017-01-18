@@ -3,9 +3,9 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
+use lluminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
-use lluminate\Support\Collection;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
@@ -69,8 +69,8 @@ class BattlenetHttpClient
     }
 
     /**
-     * Cache the api response data if cache set to true in config file
-     * 
+     * Cache the api response data if cache set to true in config file.
+     *
      * @param  Illuminate\Support\Collection $response
      * @param  string $method   method name
      * @return Illuminate\Support\Collection api response
