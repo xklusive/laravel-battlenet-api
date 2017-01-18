@@ -1,5 +1,12 @@
 # Laravel 5 Battle.net API
- 
+
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/xklusive/laravel-battlenet-api.svg?style=flat-square)](https://packagist.org/packages/xklusive/laravel-battlenet-api)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-permission.svg?style=flat-square)](https://scrutinizer-ci.com/g/xklusive/laravel-battlenet-api)
+[![StyleCI](https://styleci.io/repos/79335460/shield)](https://styleci.io/repos/79335460)
+[![Total Downloads](https://img.shields.io/packagist/dt/xklusive/laravel-battlenet-api.svg?style=flat-square)](https://packagist.org/packages/xklusive/laravel-battlenet-api)
+
 This package allows to call the Battle.net API.
 
 Once installed you can do stuff like this:
