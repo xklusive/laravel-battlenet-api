@@ -4,7 +4,6 @@ namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use lluminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
 
