@@ -3,6 +3,7 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use lluminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
@@ -73,9 +74,9 @@ class BattlenetHttpClient
      *
      * @param  Illuminate\Support\Collection $response
      * @param  string $method   method name
-     * @return Illuminate\Support\Collection api response
+     * @return GuzzleHttp\Psr7\Response api response
      */
-    public function cache(Collection $response, $method)
+    public function cache(Response $response, $method)
     {
         if (true === $this->hasToCache()) {
             return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
