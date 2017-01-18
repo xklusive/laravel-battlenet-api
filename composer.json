@@ -1,0 +1,22 @@
+{
+    "name": "xklusive/laravel-battlenet-api",
+    "description": "Laravel 5 client for Battle.net API",
+    "authors": [
+        {
+            "name": "Guillaume Meheust",
+            "email": "xklusive91@gmail.com",
+            "Role": "Developper"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "6.0",
+        "illuminate/support": "^5.3"
+    },
+
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Xklusive\\BattlenetApi\\": "src"
+        }
+    },
+}
