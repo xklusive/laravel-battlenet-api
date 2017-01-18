@@ -5,6 +5,7 @@ namespace Xklusive\BattlenetApi;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
+use lluminate\Support\Collection;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
@@ -67,9 +68,16 @@ class BattlenetHttpClient
         }
     }
 
-    public function cache($response, $method)
+    /**
+     * Cache the api response data if cache set to true in config file
+     * 
+     * @param  Illuminate\Support\Collection $response
+     * @param  string $method   method name
+     * @return Illuminate\Support\Collection api response
+     */
+    public function cache(Collection $response, $method)
     {
-        if (true == $this->hasToCache()) {
+        if (true === $this->hasToCache()) {
             return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
                 return collect(json_decode($response->getBody()->getContents()));
             });
