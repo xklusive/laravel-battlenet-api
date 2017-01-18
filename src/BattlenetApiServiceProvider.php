@@ -39,6 +39,6 @@ class BattlenetApiServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(WowService::class, Xklusive\BattlenetApi\Services\WowService::class);
+        $this->app->bind('WowService', WowService::class);
     }
 }
