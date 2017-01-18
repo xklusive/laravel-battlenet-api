@@ -1,19 +1,27 @@
 {
     "name": "xklusive/laravel-battlenet-api",
     "description": "Laravel 5 client for Battle.net API",
+    "keywords": [
+        "laravel",
+        "battle.net",
+        "battlenet",
+        "api"
+    ],
+    "homepage": "https://github.com/xklusive/laravel-battlenet-api",
+    "license": "MIT",
     "authors": [
         {
             "name": "Guillaume Meheust",
             "email": "xklusive91@gmail.com",
-            "Role": "Developper"
+            "role": "Developer"
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "6.0",
-        "illuminate/support": "^5.3"
+        "php" : ">=5.6.0",
+        "laravel/framework": "~5.3.0",
+        "illuminate/contracts": "~5.3.0",
+        "guzzlehttp/guzzle": "^6.0"
     },
-
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Xklusive\\BattlenetApi\\": "src"
