@@ -492,7 +492,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataTalents(array $options = [])
     {
-        return $this->request('/data/talents', $options);
+        return $this->cache($this->api('/data/talents', $options), __FUNCTION__);
     }
 
     /**
