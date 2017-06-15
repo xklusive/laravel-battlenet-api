@@ -57,15 +57,20 @@ class BattlenetHttpClient
      */
     protected function api($apiEndPoint, array $options)
     {
+        // $options = $this->getQueryOptions($options);
+
+        // $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
+
+        // if ($response->getStatusCode() == 200) {
+        //     return $response;
+        // } else {
+        //     throw new \HttpResponseException('Invalid Response');
+        // }
+
         $options = $this->getQueryOptions($options);
+        $apiEndPoint = $this->gameParam.$apiEndPoint;
 
-        $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
-
-        if ($response->getStatusCode() == 200) {
-            return $response;
-        } else {
-            throw new \HttpResponseException('Invalid Response');
-        }
+        return ($this->client,$apiEndPoint,$options);
     }
 
     /**
@@ -75,13 +80,16 @@ class BattlenetHttpClient
      * @param  string $method   method name
      * @return GuzzleHttp\Psr7\Response api response
      */
-    public function cache(Response $response, $method)
+    public function cache(Client $client, $apiEndPoint, $options, $method)
     {
+        dd($client, $apiEndPoint, $options, $method);
         if (true === $this->hasToCache()) {
             return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
+                $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
                 return collect(json_decode($response->getBody()->getContents()));
             });
         } else {
+            $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
             return collect(json_decode($response->getBody()->getContents()));
         }
     }

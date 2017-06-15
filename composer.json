@@ -14,6 +14,11 @@
             "name": "Guillaume Meheust",
             "email": "xklusive91@gmail.com",
             "role": "Developer"
+        },
+        {
+            "name": "Dániel Hagyárossy",
+            "email": "d.hagyarossy@sapstar.eu",
+            "role": "Developer"  
         }
     ],
     "require": {
