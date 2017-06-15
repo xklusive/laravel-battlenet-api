@@ -512,7 +512,7 @@ class WowService extends BattlenetHttpClient
     /**
      * Get profile characters.
      *
-     * This provides data about the current logged in OAuth user's WoW profile
+     * This provides data about the current logged in OAuth user's - or the given user - WoW profile
      *
      * @param array $options Options
      *
@@ -520,14 +520,26 @@ class WowService extends BattlenetHttpClient
      */
     public function getProfileCharacters(array $options = [])
     {
-        $options['query']['access_token'] = $options['access_token'] ? 
-                                                $options['access_token'] : 
-                                                auth()->user()->bnet_token;
+        $access_token   = array_key_exists('access_token', $options) 
+                                ? $options['access_token'] 
+                                : auth()->user()->bnet_token;
 
-        $options['cache']['user_id'] = $options['user_id'] ? 
-                                            $options['user_id'] : 
-                                            auth()->user()->id;
+        $access_scope   = array_key_exists('access_scope', $options) 
+                                ? $options['access_scope'] 
+                                : auth()->user()->bnet_scope;
 
-        return $this->cache($this->api('/user/characters', $options), __FUNCTION__);
+        $user_id        = array_key_exists('user_id', $options) 
+                                ? $options['user_id'] 
+                                : auth()->user()->id;
+
+        $options['query']['access_token'] = $access_token;
+        $options['cache']['user_id'] = $user_id;
+
+        if (strpos($access_scope, 'wow.profile') === false) {
+            // dd('We are not allowed to queyr this user WoW Profile, so there is no point to call the api hence returning NULL');
+            return null;
+        } else {
+            return $this->cache($this->api('/user/characters', $options), __FUNCTION__);
+        }
     }
 }
