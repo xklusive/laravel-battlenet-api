@@ -18,8 +18,8 @@
     ],
     "require": {
         "php" : ">=5.6.0",
-        "laravel/framework": "~5.3.0",
-        "illuminate/contracts": "~5.3.0",
+        "laravel/framework": "^5.3.0",
+        "illuminate/contracts": "^5.3.0",
         "guzzlehttp/guzzle": "^6.2"
     },
     "autoload": {
