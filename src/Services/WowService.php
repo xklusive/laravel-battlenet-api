@@ -160,7 +160,9 @@ class WowService extends BattlenetHttpClient
      * This provides a list of characters currently in the guild Roster.
      * This is a wrapper function for the getGuild data function for easier access.
      *
-     * @param array $options Options
+     * @param string $realm     Realm the guild lives on
+     * @param string $guildName Name of the guild being retrieved
+     * @param array  $options   Options
      *
      * @return Illuminate\Support\Collection api response
      */
