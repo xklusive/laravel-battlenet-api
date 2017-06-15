@@ -4,6 +4,7 @@ namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
 
@@ -57,20 +58,13 @@ class BattlenetHttpClient
      */
     protected function api($apiEndPoint, array $options)
     {
-        // $options = $this->getQueryOptions($options);
-
-        // $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
-
-        // if ($response->getStatusCode() == 200) {
-        //     return $response;
-        // } else {
-        //     throw new \HttpResponseException('Invalid Response');
-        // }
-
         $options = $this->getQueryOptions($options);
         $apiEndPoint = $this->gameParam.$apiEndPoint;
 
-        return ($this->client,$apiEndPoint,$options);
+        return ([
+            'apiEndPoint' => $apiEndPoint,
+            'options' => $options
+        ]);
     }
 
     /**
@@ -80,16 +74,18 @@ class BattlenetHttpClient
      * @param  string $method   method name
      * @return GuzzleHttp\Psr7\Response api response
      */
-    public function cache(Client $client, $apiEndPoint, $options, $method)
+    public function cache(array $attributes, $method)
     {
-        dd($client, $apiEndPoint, $options, $method);
+        $client = $this->client;
+        $attributes['options']['cache']['method'] = snake_case($method);
+
         if (true === $this->hasToCache()) {
-            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
-                $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
+            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($attributes) {
+                $response = $this->client->get($attributes['apiEndPoint'], $attributes['options']);
                 return collect(json_decode($response->getBody()->getContents()));
             });
         } else {
-            $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
+            $response = $this->client->get($attributes['apiEndPoint'], $attributes['options']);
             return collect(json_decode($response->getBody()->getContents()));
         }
     }
@@ -118,12 +114,12 @@ class BattlenetHttpClient
     private function getQueryOptions(array $options = [])
     {
         if (isset($options['query'])) {
-            $result = $options['query'] + $this->getDefaultOptions();
+            $options['query'] = $options['query'] + $this->getDefaultOptions();
         } else {
-            $result['query'] = $options + $this->getDefaultOptions();
+            $options['query'] += $this->getDefaultOptions();
         }
 
-        return $result;
+        return $options;
     }
 
     /**
