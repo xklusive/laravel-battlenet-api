@@ -155,6 +155,29 @@ class WowService extends BattlenetHttpClient
     }
 
     /**
+     * Get guild members.
+     *
+     * This provides a list of characters currently in the guild Roster.
+     * This is a wrapper function for the getGuild data function for easier access.
+     *
+     * @param array $options Options
+     *
+     * @return Illuminate\Support\Collection api response
+     */
+    public function getGuildMembers($realm, $guildName, array $options = [])
+    {
+        if ( array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false ) {
+            $options['fields'] = implode(',',[$options['fields'],'members']);
+        } else {
+            $options['fields'] = 'members';
+        }
+
+        $options['query'] = $options; // this is a query options so we need to handle it like that.
+
+        return $this->getGuild($realm, $guildName, $options);
+    }
+
+    /**
      * Get item information by id.
      *
      * The item API provides detailed item information. This includes item set information if this item is part of a set.
