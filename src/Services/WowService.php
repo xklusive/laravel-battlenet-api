@@ -520,7 +520,13 @@ class WowService extends BattlenetHttpClient
      */
     public function getProfileCharacters(array $options = [])
     {
-        $options['access_token'] = auth()->user()->bnet_token;
+        $options['query']['access_token'] = $options['access_token'] ? 
+                                                $options['access_token'] : 
+                                                auth()->user()->bnet_token;
+
+        $options['cache']['user_id'] = $options['user_id'] ? 
+                                            $options['user_id'] : 
+                                            auth()->user()->id;
 
         return $this->cache($this->api('/user/characters', $options), __FUNCTION__);
     }
