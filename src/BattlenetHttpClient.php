@@ -51,42 +51,83 @@ class BattlenetHttpClient
     /**
      * Make request with API url and specific URL suffix.
      *
-     * @param string $urlSuffix API URL method
-     * @param array  $options   Options
-     *
-     * @return ResponseInterface
+     * @return Collection / GuzzleHttp\Exception\ClientException
      */
-    protected function api($apiEndPoint, array $options)
+    protected function api()
     {
-        $options = $this->getQueryOptions($options);
-        $apiEndPoint = $this->gameParam.$apiEndPoint;
+        $maxAttempts = 1;
+        $attempts = 0;
 
-        return ([
-            'apiEndPoint' => $apiEndPoint,
-            'options' => $options
-        ]);
+        $statusCodes = [
+            // '401' => [
+            //     'message' => 'Unauthorized',
+            //     'retry' => 1,
+            // ],
+            // '403' => [
+            //     'message' => 'Forbidden',
+            //     'retry' => 1,
+            // ],
+            '504' => [
+                'message' => 'Gateway Timeout',
+                'retry' => 5,
+            ]
+        ];
+
+        do {
+            try {
+                $response = $this->client->get($this->apiEndPoint, $this->options);
+
+                return collect(json_decode($response->getBody()->getContents()));
+            } catch (\Exception $e) {
+                $statusCode = $e->getResponse()->getStatusCode();
+                $reasonPhrase = $e->getResponse()->getReasonPhrase();
+
+                Debugbar::warning("We got an error -- $statusCode -- $reasonPhrase");
+                if ( array_key_exists($statusCode, $statusCodes) ) {
+                    if ( $statusCodes[$statusCode]['message'] == $reasonPhrase) {
+                        Debugbar::warning("Error is retriable, continue with attempt #$attempts out of $maxAttempts");
+                        $maxAttempts = $statusCodes[$statusCode]['retry'];
+                        $attempts++;
+                        continue;
+                    }
+                } else {
+                    $maxAttempts = $attempts;
+                    Debugbar::warning("Error is non retriable exiting...");
+                }
+            }    
+        } while ($attempts < $maxAttempts);
+
+        Debugbar::warning("We have no retries left. Lets return to the fallback function.");
+        return $e;
     }
 
     /**
      * Cache the api response data if cache set to true in config file.
      *
-     * @param  Illuminate\Support\Collection $response
+     * @param string $urlSuffix API URL method
+     * @param array  $options   Options
      * @param  string $method   method name
-     * @return GuzzleHttp\Psr7\Response api response
+     * @return Collection / GuzzleHttp\Exception\ClientException
      */
-    public function cache(array $attributes, $method)
+    public function cache($apiEndPoint, array $options, $method)
     {
-        $client = $this->client;
-        $attributes['options']['cache']['method'] = snake_case($method);
+        $this->options = $this->getQueryOptions($options);
+        $this->apiEndPoint = $this->gameParam.$apiEndPoint;
+
+        $this->options['cache']['method'] = snake_case($method);
+        $uniqCacheKey = implode('.',[$this->cacheKey,implode('.',$this->options['cache'])]);
 
         if (true === $this->hasToCache()) {
-            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($attributes) {
-                $response = $this->client->get($attributes['apiEndPoint'], $attributes['options']);
-                return collect(json_decode($response->getBody()->getContents()));
-            });
+            return $this->cache->remember(
+                $uniqCacheKey, 
+                $this->getCacheDuration(), 
+                function () { 
+                    return $this->api();
+                    // return collect(json_decode($response->getBody()->getContents()));
+                }
+            );
         } else {
-            $response = $this->client->get($attributes['apiEndPoint'], $attributes['options']);
-            return collect(json_decode($response->getBody()->getContents()));
+            return $this->api();
         }
     }
 

@@ -26,7 +26,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getAchievement($achievementId, array $options = [])
     {
-        return $this->cache($this->api('/achievement/'.(int) $achievementId, $options), __FUNCTION__);
+        return $this->cache('/achievement/'.(int) $achievementId, $options, __FUNCTION__);
     }
 
     /**
@@ -45,7 +45,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getAuctionDataStatus($realm, array $options = [])
     {
-        return $this->cache($this->api('/auction/data/'.(string) $realm, $options), __FUNCTION__);
+        return $this->cache('/auction/data/'.(string) $realm, $options, __FUNCTION__);
     }
 
     /**
@@ -60,7 +60,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getBossMasterList(array $options = [])
     {
-        return $this->cache($this->api('/boss/', $options), __FUNCTION__);
+        return $this->cache('/boss/', $options, __FUNCTION__);
     }
 
     /**
@@ -76,7 +76,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getBoss($bossId, array $options = [])
     {
-        return $this->cache($this->api('/boss/'.(int) $bossId, $options), __FUNCTION__);
+        return $this->cache('/boss/'.(int) $bossId, $options, __FUNCTION__);
     }
 
     /**
@@ -94,7 +94,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRealmLeaderboard($realm, array $options = [])
     {
-        return $this->cache($this->api('/challenge/'.(string) $realm, $options), __FUNCTION__);
+        return $this->cache('/challenge/'.(string) $realm, $options, __FUNCTION__);
     }
 
     /**
@@ -109,7 +109,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRegionLeaderboard(array $options = [])
     {
-        return $this->cache($this->api('/challenge/region/', $options), __FUNCTION__);
+        return $this->cache('/challenge/region/', $options, __FUNCTION__);
     }
 
     /**
@@ -129,7 +129,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getCharacter($realm, $characterName, array $options = [])
     {
-        return $this->cache($this->api('/character/'.(string) $realm.'/'.(string) $characterName, $options), __FUNCTION__);
+        return $this->cache('/character/'.(string) $realm.'/'.(string) $characterName, $options, __FUNCTION__);
     }
 
     /**
@@ -151,7 +151,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuild($realm, $guildName, array $options = [])
     {
-        return $this->cache($this->api('/guild/'.(string) $realm.'/'.(string) $guildName, $options), __FUNCTION__);
+        return $this->cache('/guild/'.(string) $realm.'/'.(string) $guildName, $options, __FUNCTION__);
     }
 
     /**
@@ -191,7 +191,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getItem($itemId, array $options = [])
     {
-        return $this->cache($this->api('/item/'.(int) $itemId, $options), __FUNCTION__);
+        return $this->cache('/item/'.(int) $itemId, $options, __FUNCTION__);
     }
 
     /**
@@ -206,7 +206,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getItemSet($setId, array $options = [])
     {
-        return $this->cache($this->api('/item/set/'.(int) $setId, $options), __FUNCTION__);
+        return $this->cache('/item/set/'.(int) $setId, $options, __FUNCTION__);
     }
 
     /**
@@ -220,7 +220,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getMountMasterList(array $options = [])
     {
-        return $this->cache($this->api('/mount/', $options), __FUNCTION__);
+        return $this->cache('/mount/', $options, __FUNCTION__);
     }
 
     /**
@@ -234,7 +234,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetList(array $options = [])
     {
-        return $this->cache($this->api('/pet/', $options), __FUNCTION__);
+        return $this->cache('/pet/', $options, __FUNCTION__);
     }
 
     /**
@@ -250,7 +250,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetAbility($abilityId, array $options = [])
     {
-        return $this->cache($this->api('/pet/ability/'.(int) $abilityId, $options), __FUNCTION__);
+        return $this->cache('/pet/ability/'.(int) $abilityId, $options, __FUNCTION__);
     }
 
     /**
@@ -266,7 +266,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetSpecies($speciesId, array $options = [])
     {
-        return $this->cache($this->api('/pet/species/'.(int) $speciesId, $options), __FUNCTION__);
+        return $this->cache('/pet/species/'.(int) $speciesId, $options, __FUNCTION__);
     }
 
     /**
@@ -281,7 +281,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetStats($speciesId, array $options = [])
     {
-        return $this->cache($this->api('/pet/stats/'.(int) $speciesId, $options), __FUNCTION__);
+        return $this->cache('/pet/stats/'.(int) $speciesId, $options, __FUNCTION__);
     }
 
     /**
@@ -297,7 +297,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getLeaderboards($bracket, array $options = [])
     {
-        return $this->cache($this->api('/leaderboard/'.(string) $bracket, $options), __FUNCTION__);
+        return $this->cache('/leaderboard/'.(string) $bracket, $options, __FUNCTION__);
     }
 
     /**
@@ -312,7 +312,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getQuest($questId, array $options = [])
     {
-        return $this->cache($this->api('/quest/'.(int) $questId, $options), __FUNCTION__);
+        return $this->cache('/quest/'.(int) $questId, $options, __FUNCTION__);
     }
 
     /**
@@ -328,7 +328,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRealmStatus(array $options = [])
     {
-        return $this->cache($this->api('/realm/', $options), __FUNCTION__);
+        return $this->cache('/realm/', $options, __FUNCTION__);
     }
 
     /**
@@ -343,7 +343,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRecipe($recipeId, array $options = [])
     {
-        return $this->cache($this->api('/recipe/'.(int) $recipeId, $options), __FUNCTION__);
+        return $this->cache('/recipe/'.(int) $recipeId, $options, __FUNCTION__);
     }
 
     /**
@@ -358,7 +358,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getSpell($spellId, array $options = [])
     {
-        return $this->cache($this->api('/spell/'.(int) $spellId, $options), __FUNCTION__);
+        return $this->cache('/spell/'.(int) $spellId, $options, __FUNCTION__);
     }
 
     /**
@@ -374,7 +374,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getZonesMasterList(array $options = [])
     {
-        return $this->cache($this->api('/zone/', $options), __FUNCTION__);
+        return $this->cache('/zone/', $options, __FUNCTION__);
     }
 
     /**
@@ -389,7 +389,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getZone($zoneId, array $options = [])
     {
-        return $this->cache($this->api('/zone/'.(int) $zoneId, $options), __FUNCTION__);
+        return $this->cache('/zone/'.(int) $zoneId, $options, __FUNCTION__);
     }
 
     /**
@@ -403,7 +403,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataBattlegroups(array $options = [])
     {
-        $this->cache($this->api('/data/battlegroups/', $options), __FUNCTION__);
+        $this->cache('/data/battlegroups/', $options, __FUNCTION__);
     }
 
     /**
@@ -417,7 +417,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataCharacterRaces(array $options = [])
     {
-        return $this->cache($this->api('/data/character/races', $options), __FUNCTION__);
+        return $this->cache('/data/character/races', $options, __FUNCTION__);
     }
 
     /**
@@ -431,7 +431,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataCharacterClasses(array $options = [])
     {
-        return $this->cache($this->api('/data/character/classes', $options), __FUNCTION__);
+        return $this->cache('/data/character/classes', $options, __FUNCTION__);
     }
 
     /**
@@ -446,7 +446,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataCharacterAchievements(array $options = [])
     {
-        return $this->cache($this->api('/data/character/achievements', $options), __FUNCTION__);
+        return $this->cache('/data/character/achievements', $options, __FUNCTION__);
     }
 
     /**
@@ -460,7 +460,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataGuildRewards(array $options = [])
     {
-        return $this->cache($this->api('/data/guild/rewards', $options), __FUNCTION__);
+        return $this->cache('/data/guild/rewards', $options, __FUNCTION__);
     }
 
     /**
@@ -474,7 +474,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataGuildPerks(array $options = [])
     {
-        return $this->cache($this->api('/data/guild/perks', $options), __FUNCTION__);
+        return $this->cache('/data/guild/perks', $options, __FUNCTION__);
     }
 
     /**
@@ -489,7 +489,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataGuildAchievements(array $options = [])
     {
-        return $this->cache($this->api('/data/guild/achievements', $options), __FUNCTION__);
+        return $this->cache('/data/guild/achievements', $options, __FUNCTION__);
     }
 
     /**
@@ -503,7 +503,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataItemClasses(array $options = [])
     {
-        return $this->cache($this->api('/data/item/classes', $options), __FUNCTION__);
+        return $this->cache('/data/item/classes', $options, __FUNCTION__);
     }
 
     /**
@@ -517,7 +517,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataTalents(array $options = [])
     {
-        return $this->cache($this->api('/data/talents', $options), __FUNCTION__);
+        return $this->cache('/data/talents', $options, __FUNCTION__);
     }
 
     /**
@@ -531,7 +531,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataPetTypes(array $options = [])
     {
-        return $this->cache($this->api('/data/pet/types', $options), __FUNCTION__);
+        return $this->cache('/data/pet/types', $options, __FUNCTION__);
     }
 
     /**
@@ -564,7 +564,7 @@ class WowService extends BattlenetHttpClient
             // dd('We are not allowed to queyr this user WoW Profile, so there is no point to call the api hence returning NULL');
             return null;
         } else {
-            return $this->cache($this->api('/user/characters', $options), __FUNCTION__);
+            return $this->cache('/user/characters', $options, __FUNCTION__);
         }
     }
 }
