@@ -82,22 +82,18 @@ class BattlenetHttpClient
                 $statusCode = $e->getResponse()->getStatusCode();
                 $reasonPhrase = $e->getResponse()->getReasonPhrase();
 
-                Debugbar::warning("We got an error -- $statusCode -- $reasonPhrase");
                 if ( array_key_exists($statusCode, $statusCodes) ) {
                     if ( $statusCodes[$statusCode]['message'] == $reasonPhrase) {
-                        Debugbar::warning("Error is retriable, continue with attempt #$attempts out of $maxAttempts");
                         $maxAttempts = $statusCodes[$statusCode]['retry'];
                         $attempts++;
                         continue;
                     }
                 } else {
                     $maxAttempts = $attempts;
-                    Debugbar::warning("Error is non retriable exiting...");
                 }
             }    
         } while ($attempts < $maxAttempts);
 
-        Debugbar::warning("We have no retries left. Lets return to the fallback function.");
         return $e;
     }
 
@@ -123,7 +119,6 @@ class BattlenetHttpClient
                 $this->getCacheDuration(), 
                 function () { 
                     return $this->api();
-                    // return collect(json_decode($response->getBody()->getContents()));
                 }
             );
         } else {
