@@ -14,12 +14,17 @@
             "name": "Guillaume Meheust",
             "email": "xklusive91@gmail.com",
             "role": "Developer"
+        },
+        {
+            "name": "Dániel Hagyárossy",
+            "email": "d.hagyarossy@sapstar.eu",
+            "role": "Developer"  
         }
     ],
     "require": {
         "php" : ">=5.6.0",
-        "laravel/framework": "~5.3.0",
-        "illuminate/contracts": "~5.3.0",
+        "laravel/framework": "^5.3.0",
+        "illuminate/contracts": "^5.3.0",
         "guzzlehttp/guzzle": "^6.2"
     },
     "autoload": {

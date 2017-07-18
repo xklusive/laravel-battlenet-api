@@ -4,6 +4,7 @@ namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
 
@@ -50,39 +51,78 @@ class BattlenetHttpClient
     /**
      * Make request with API url and specific URL suffix.
      *
-     * @param string $urlSuffix API URL method
-     * @param array  $options   Options
-     *
-     * @return ResponseInterface
+     * @return Collection / GuzzleHttp\Exception\ClientException
      */
-    protected function api($apiEndPoint, array $options)
+    protected function api()
     {
-        $options = $this->getQueryOptions($options);
+        $maxAttempts = 1;
+        $attempts = 0;
 
-        $response = $this->client->get($this->gameParam.$apiEndPoint, $options);
+        $statusCodes = [
+            // '401' => [
+            //     'message' => 'Unauthorized',
+            //     'retry' => 1,
+            // ],
+            // '403' => [
+            //     'message' => 'Forbidden',
+            //     'retry' => 1,
+            // ],
+            '504' => [
+                'message' => 'Gateway Timeout',
+                'retry' => 5,
+            ]
+        ];
 
-        if ($response->getStatusCode() == 200) {
-            return $response;
-        } else {
-            throw new \HttpResponseException('Invalid Response');
-        }
+        do {
+            try {
+                $response = $this->client->get($this->apiEndPoint, $this->options);
+
+                return collect(json_decode($response->getBody()->getContents()));
+            } catch (\Exception $e) {
+                $statusCode = $e->getResponse()->getStatusCode();
+                $reasonPhrase = $e->getResponse()->getReasonPhrase();
+
+                if ( array_key_exists($statusCode, $statusCodes) ) {
+                    if ( $statusCodes[$statusCode]['message'] == $reasonPhrase) {
+                        $maxAttempts = $statusCodes[$statusCode]['retry'];
+                        $attempts++;
+                        continue;
+                    }
+                } else {
+                    $maxAttempts = $attempts;
+                }
+            }    
+        } while ($attempts < $maxAttempts);
+
+        return $e;
     }
 
     /**
      * Cache the api response data if cache set to true in config file.
      *
-     * @param  Illuminate\Support\Collection $response
+     * @param string $urlSuffix API URL method
+     * @param array  $options   Options
      * @param  string $method   method name
-     * @return GuzzleHttp\Psr7\Response api response
+     * @return Collection / GuzzleHttp\Exception\ClientException
      */
-    public function cache(Response $response, $method)
+    public function cache($apiEndPoint, array $options, $method)
     {
+        $this->options = $this->getQueryOptions($options);
+        $this->apiEndPoint = $this->gameParam.$apiEndPoint;
+
+        $this->options['cache']['method'] = snake_case($method);
+        $uniqCacheKey = implode('.',[$this->cacheKey,implode('.',$this->options['cache'])]);
+
         if (true === $this->hasToCache()) {
-            return $this->cache->remember($this->cacheKey.snake_case($method), $this->getCacheDuration(), function () use ($response) {
-                return collect(json_decode($response->getBody()->getContents()));
-            });
+            return $this->cache->remember(
+                $uniqCacheKey, 
+                $this->getCacheDuration(), 
+                function () { 
+                    return $this->api();
+                }
+            );
         } else {
-            return collect(json_decode($response->getBody()->getContents()));
+            return $this->api();
         }
     }
 
@@ -110,12 +150,12 @@ class BattlenetHttpClient
     private function getQueryOptions(array $options = [])
     {
         if (isset($options['query'])) {
-            $result = $options['query'] + $this->getDefaultOptions();
+            $options['query'] = $options['query'] + $this->getDefaultOptions();
         } else {
-            $result['query'] = $options + $this->getDefaultOptions();
+            $options['query'] += $this->getDefaultOptions();
         }
 
-        return $result;
+        return $options;
     }
 
     /**
