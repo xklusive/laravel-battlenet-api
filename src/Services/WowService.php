@@ -168,8 +168,8 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
-        if ( array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false ) {
-            $options['fields'] = implode(',',[$options['fields'],'members']);
+        if (array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false ) {
+            $options['fields'] = implode(',', [$options['fields'], 'members']);
         } else {
             $options['fields'] = 'members';
         }
@@ -284,18 +284,18 @@ class WowService extends BattlenetHttpClient
         $options = collect($options); // Create a collection from the options, easier to work with.
 
         foreach ($options as $key => $option) {
-            if (in_array($key, ['level', 'breedId', 'qualityId'])) 
-            {
+            if (in_array($key, ['level', 'breedId', 'qualityId'])) {
                 // We have some valid options for this query, lets add them to the query options
                 if ($options->has('query')) {
                     // We already have some query options lets add the new ones to the list.
                     $options->get('query')->put($key, $option);
                 } else {
                     // We don't have any query options. Create a new collection and the first option to it.
-                    $options->put('query',collect([$key => $option]));
+                    $options->put('query', collect([$key => $option]));
                 }
             }
         }
+
         return $this->cache('/pet/stats/'.(int) $speciesId, $options->toArray(), __FUNCTION__);
     }
 
@@ -560,16 +560,16 @@ class WowService extends BattlenetHttpClient
      */
     public function getProfileCharacters(array $options = [])
     {
-        $access_token   = array_key_exists('access_token', $options) 
-                                ? $options['access_token'] 
+        $access_token   = array_key_exists('access_token', $options)
+                                ? $options['access_token']
                                 : auth()->user()->bnet_token;
 
-        $access_scope   = array_key_exists('access_scope', $options) 
-                                ? $options['access_scope'] 
+        $access_scope   = array_key_exists('access_scope', $options)
+                                ? $options['access_scope']
                                 : auth()->user()->bnet_scope;
 
-        $user_id        = array_key_exists('user_id', $options) 
-                                ? $options['user_id'] 
+        $user_id        = array_key_exists('user_id', $options)
+                                ? $options['user_id']
                                 : auth()->user()->id;
 
         $options['query']['access_token'] = $access_token;
@@ -577,7 +577,7 @@ class WowService extends BattlenetHttpClient
 
         if (strpos($access_scope, 'wow.profile') === false) {
             // dd('We are not allowed to queyr this user WoW Profile, so there is no point to call the api hence returning NULL');
-            return null;
+            return;
         } else {
             return $this->cache('/user/characters', $options, __FUNCTION__);
         }

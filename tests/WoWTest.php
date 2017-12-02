@@ -4,12 +4,13 @@ namespace Xklusive\BattlenetApi\Test;
 
 use Illuminate\Support\Collection;
 
-class WowTest extends TestCase
+class WoWTest extends TestCase
 {
     protected $wow;
     protected $realm = 'Arathor';
     protected $guild = 'Rise Legacy';
     protected $character = 'Hellodora';
+    protected $achievementId = 2144;
     protected $itemId = 18803;
     protected $itemSet = 1060;
     protected $abilityId = 640;
@@ -32,12 +33,11 @@ class WowTest extends TestCase
     /** @test */
     public function api_can_fetch_wow_achievements()
     {
-        $id = 2144; # Achievement ID
-        $response = $this->wow->getAchievement($id);
+        $response = $this->wow->getAchievement($this->achievementId);
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($id,$response->get('id'));
+        $this->assertEquals($this->achievementId, $response->get('id'));
     }
 
     /** @test */
@@ -100,7 +100,7 @@ class WowTest extends TestCase
         $this->assertArrayHasKey('race', $response->toArray());
         $this->assertArrayHasKey('gender', $response->toArray());
         $this->assertArrayHasKey('level', $response->toArray());
-        $this->assertEquals($this->character,$response->get('name'));
+        $this->assertEquals($this->character, $response->get('name'));
     }
 
     /** @test */
@@ -113,20 +113,20 @@ class WowTest extends TestCase
         $this->assertArrayHasKey('level', $response->toArray());
         $this->assertArrayHasKey('side', $response->toArray());
         $this->assertArrayHasKey('emblem', $response->toArray());
-        $this->assertEquals($this->guild,$response->get('name'));
+        $this->assertEquals($this->guild, $response->get('name'));
     }
 
     /** @test */
     public function api_can_fetch_guild_members()
     {
-        $response = $this->wow->getGuildMembers($this->realm,$this->guild);
+        $response = $this->wow->getGuildMembers($this->realm, $this->guild);
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('name', $response->toArray());
         $this->assertArrayHasKey('realm', $response->toArray());
         $this->assertArrayHasKey('members', $response->toArray());
         $this->assertObjectHasAttribute('character', $response->get('members')[0]);
-        $this->assertEquals($this->guild,$response->get('name'));
+        $this->assertEquals($this->guild, $response->get('name'));
     }
 
     /** @test */
@@ -136,7 +136,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->itemId,$response->get('id'));
+        $this->assertEquals($this->itemId, $response->get('id'));
     }
 
     /** @test */
@@ -146,7 +146,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->itemSet,$response->get('id'));
+        $this->assertEquals($this->itemSet, $response->get('id'));
     }
 
     /** @test */
@@ -178,7 +178,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->abilityId,$response->get('id'));
+        $this->assertEquals($this->abilityId, $response->get('id'));
     }
 
     /** @test */
@@ -188,7 +188,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('speciesId', $response->toArray());
-        $this->assertEquals($this->speciesId,$response->get('speciesId'));
+        $this->assertEquals($this->speciesId, $response->get('speciesId'));
     }
 
     /** @test */
@@ -201,7 +201,7 @@ class WowTest extends TestCase
         $this->assertArrayHasKey('level', $response->toArray());
         $this->assertArrayHasKey('breedId', $response->toArray());
         $this->assertArrayHasKey('petQualityId', $response->toArray());
-        $this->assertEquals($this->speciesId,$response->get('speciesId'));
+        $this->assertEquals($this->speciesId, $response->get('speciesId'));
     }
 
     /** @test */
@@ -214,10 +214,10 @@ class WowTest extends TestCase
         $this->assertArrayHasKey('level', $response->toArray());
         $this->assertArrayHasKey('breedId', $response->toArray());
         $this->assertArrayHasKey('petQualityId', $response->toArray());
-        $this->assertEquals($this->speciesId,$response->get('speciesId'));
-        $this->assertEquals($this->petLevel,$response->get('level'));
-        $this->assertEquals($this->petBreedId,$response->get('breedId'));
-        $this->assertEquals($this->petQualityId,$response->get('petQualityId'));
+        $this->assertEquals($this->speciesId, $response->get('speciesId'));
+        $this->assertEquals($this->petLevel, $response->get('level'));
+        $this->assertEquals($this->petBreedId, $response->get('breedId'));
+        $this->assertEquals($this->petQualityId, $response->get('petQualityId'));
     }
 
     /** @test */
@@ -238,7 +238,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->questId,$response->get('id'));
+        $this->assertEquals($this->questId, $response->get('id'));
     }
 
     /** @test */
@@ -259,7 +259,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->recipeId,$response->get('id'));
+        $this->assertEquals($this->recipeId, $response->get('id'));
     }
 
     /** @test */
@@ -269,7 +269,7 @@ class WowTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
-        $this->assertEquals($this->spellId,$response->get('id'));
+        $this->assertEquals($this->spellId, $response->get('id'));
     }
 
     /** @test */
