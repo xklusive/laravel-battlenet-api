@@ -170,35 +170,25 @@ class WowService extends BattlenetHttpClient
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
         $options = $this->wrapCollection($options);
+        $query = $this->wrapCollection($options->get('query'));
+        $fields = $this->wrapCollection($query->get('fields'));
 
-        if ($options->has('query')) {
-            $query = $this->wrapCollection($options->get('query'));
-            $fields = $this->wrapCollection($query->get('fields'));
-
-            if ($fields->isEmpty()) {
-                // The options doesn't contain a fields section which is required for this query.
-                // Lets add one with the default value 'members'
-                $query->put('fields', 'members');
-            }
-
-            if ($fields->contains('members') === false) {
-                // The options does contain a fileds element but 'members' is not part of it
-                // Lets add one 'members' to the list.
-                $fields->push('members');
-                $query->put('fields', $fields->implode(','));
-            }
-
-            $options->put('query', $query);
-
-            // We already have everything we need, lets call the getGuild function to proceed
-            return $this->getGuild($realm, $guildName, $options->toArray());
+        if ($fields->isEmpty()) {
+            // The options doesn't contain a fields section which is required for this query.
+            // Lets add one with the default value 'members'
+            $query->put('fields', 'members');
         }
 
-        $query = collect();
-        $query->put('fields', 'members');
+        if ($fields->contains('members') === false) {
+            // The options does contain a fileds element but 'members' is not part of it
+            // Lets add one 'members' to the list.
+            $fields->push('members');
+            $query->put('fields', $fields->implode(','));
+        }
 
         $options->put('query', $query);
 
+        // We have everything what we need, lets call the getGuild function to proceed
         return $this->getGuild($realm, $guildName, $options->toArray());
     }
 
