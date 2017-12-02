@@ -597,9 +597,10 @@ class WowService extends BattlenetHttpClient
     private function getAccessToken(array $options = [])
     {
         $options = $this->wrapCollection($options);
-        return ($options->has('access_token')
+
+        return $options->has('access_token')
             ? $options->get('access_token')
-            : auth()->user()->bnet_token);
+            : auth()->user()->bnet_token;
     }
 
     /**
@@ -613,9 +614,10 @@ class WowService extends BattlenetHttpClient
     private function getScope(array $options = [])
     {
         $options = $this->wrapCollection($options);
-        return ($options->has('access_scope')
+
+        return $options->has('access_scope')
             ? $options->get('access_scope')
-            : auth()->user()->bnet_scope);
+            : auth()->user()->bnet_scope;
     }
 
     /**
@@ -629,8 +631,9 @@ class WowService extends BattlenetHttpClient
     private function getUserId(array $options = [])
     {
         $options = $this->wrapCollection($options);
-        return ($options->has('user_id')
+
+        return $options->has('user_id')
             ? $options->get('user_id')
-            : auth()->user()->id);
+            : auth()->user()->id;
     }
 }
