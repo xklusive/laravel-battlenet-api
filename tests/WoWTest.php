@@ -305,4 +305,103 @@ class WowTest extends TestCase
         $this->assertObjectHasAttribute('name', $response->get('battlegroups')[0]);
         $this->assertObjectHasAttribute('slug', $response->get('battlegroups')[0]);
     }
+
+    /** @test */
+    public function api_can_fetch_character_races()
+    {
+        $response = $this->wow->getDataCharacterRaces();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('races', $response->toArray());
+        $this->assertObjectHasAttribute('id', $response->get('races')[0]);
+        $this->assertObjectHasAttribute('name', $response->get('races')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_character_classes()
+    {
+        $response = $this->wow->getDataCharacterClasses();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('classes', $response->toArray());
+        $this->assertObjectHasAttribute('id', $response->get('classes')[0]);
+        $this->assertObjectHasAttribute('name', $response->get('classes')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_character_achievements_data()
+    {
+        $response = $this->wow->getDataCharacterAchievements();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('achievements', $response->toArray());
+        $this->assertObjectHasAttribute('id', $response->get('achievements')[0]);
+        $this->assertObjectHasAttribute('achievements', $response->get('achievements')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_guild_rewards_data()
+    {
+        $response = $this->wow->getDataGuildRewards();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('rewards', $response->toArray());
+        $this->assertObjectHasAttribute('minGuildLevel', $response->get('rewards')[0]);
+        $this->assertObjectHasAttribute('achievement', $response->get('rewards')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_guild_perks()
+    {
+        $response = $this->wow->getDataGuildPerks();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('perks', $response->toArray());
+        $this->assertObjectHasAttribute('guildLevel', $response->get('perks')[0]);
+        $this->assertObjectHasAttribute('spell', $response->get('perks')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_guild_achievements_data()
+    {
+        $response = $this->wow->getDataGuildAchievements();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('achievements', $response->toArray());
+        $this->assertObjectHasAttribute('id', $response->get('achievements')[0]);
+        $this->assertObjectHasAttribute('achievements', $response->get('achievements')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_item_classes_data()
+    {
+        $response = $this->wow->getDataItemClasses();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('classes', $response->toArray());
+        $this->assertObjectHasAttribute('name', $response->get('classes')[0]);
+        $this->assertObjectHasAttribute('class', $response->get('classes')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_talent_data()
+    {
+        $response = $this->wow->getDataTalents();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertObjectHasAttribute('specs', $response->first());
+        $this->assertObjectHasAttribute('name', $response->first()->specs[0]);
+        $this->assertObjectHasAttribute('role', $response->first()->specs[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_pet_types_data()
+    {
+        $response = $this->wow->getDataPetTypes();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('petTypes', $response->toArray());
+        $this->assertObjectHasAttribute('name', $response->get('petTypes')[0]);
+        $this->assertObjectHasAttribute('typeAbilityId', $response->get('petTypes')[0]);
+    }
 }
