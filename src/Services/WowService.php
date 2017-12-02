@@ -3,6 +3,7 @@
 namespace Xklusive\BattlenetApi\Services;
 
 use Xklusive\BattlenetApi\BattlenetHttpClient;
+use Illuminate\Support\Collection;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
@@ -168,15 +169,37 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
-        if (array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false) {
-            $options['fields'] = implode(',', [$options['fields'], 'members']);
-        } else {
-            $options['fields'] = 'members';
+        $options = Collection::wrap($options);
+
+        if ($options->has('query')) {
+            $query = Collection::wrap($options->get('query'));
+            $fields = Collection::wrap($query->get('fields'));
+
+            if ($fields->isEmpty()) {
+                // The options doesn't contain a fields section which is required for this query.
+                // Lets add one with the default value 'members'
+                $query->put('fields', 'members');
+            }
+
+            if ($fields->contains('members') === FALSE) {
+                // The options does contain a fileds element but 'members' is not part of it
+                // Lets add one 'members' to the list.
+                $fields->push('members');
+                $query->put('fields', $fields->implode(','));
+            }
+
+            $options->put('query', $query);
+
+            // We already have everything we need, lets call the getGuild function to proceed
+            return $this->getGuild($realm, $guildName, $options->toArray());
         }
 
-        $options['query'] = $options; // This is a query options so we need to handle it like that.
+        $query = collect();
+        $query->put('fields','members');
 
-        return $this->getGuild($realm, $guildName, $options);
+        $options->put('query', $query);
+
+        return $this->getGuild($realm, $guildName, $options->toArray());
     }
 
     /**
@@ -218,7 +241,7 @@ class WowService extends BattlenetHttpClient
      *
      * @return Illuminate\Support\Collection api response
      */
-    public function getMountMasterList(array $options = [])
+    public function getMountMasterList()
     {
         return collect();
     }
@@ -542,7 +565,7 @@ class WowService extends BattlenetHttpClient
      *
      * @param array $options Options
      *
-     * @return Illuminate\Support\Collection api response
+     * @return null|\Xklusive\BattlenetApi\Collection api response
      */
     public function getDataPetTypes(array $options = [])
     {

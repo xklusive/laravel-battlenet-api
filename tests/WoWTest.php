@@ -3,6 +3,8 @@
 namespace Xklusive\BattlenetApi\Test;
 
 use Illuminate\Support\Collection;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 
 class WoWTest extends TestCase
 {
@@ -117,9 +119,22 @@ class WoWTest extends TestCase
     }
 
     /** @test */
-    public function api_can_fetch_guild_members()
+    public function api_can_fetch_guild_members_with_default_fields()
     {
         $response = $this->wow->getGuildMembers($this->realm, $this->guild);
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('name', $response->toArray());
+        $this->assertArrayHasKey('realm', $response->toArray());
+        $this->assertArrayHasKey('members', $response->toArray());
+        $this->assertObjectHasAttribute('character', $response->get('members')[0]);
+        $this->assertEquals($this->guild, $response->get('name'));
+    }
+
+    /** @test */
+    public function api_can_fetch_guild_members_with_different_fields()
+    {
+        $response = $this->wow->getGuildMembers($this->realm, $this->guild, ['query' => ['fields' => 'characters']]);
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('name', $response->toArray());
@@ -399,5 +414,27 @@ class WoWTest extends TestCase
         $this->assertArrayHasKey('petTypes', $response->toArray());
         $this->assertObjectHasAttribute('name', $response->get('petTypes')[0]);
         $this->assertObjectHasAttribute('typeAbilityId', $response->get('petTypes')[0]);
+    }
+
+    /** @test */
+    public function api_should_fail_if_the_given_URL_is_invalid()
+    {
+        $response = $this->wow->getRecipe('invalid');
+
+        $this->assertInstanceOf(ClientException::class, $response);
+    }
+
+    /** @test */
+    public function api_should_fail_if_given_battlenet_domain_is_invalid()
+    {
+        $oldDomain = config('battlenet-api.domain');
+        config(['battlenet-api.domain' => 'not a valid domain']);
+
+        $wowClient = app(\Xklusive\BattlenetApi\Services\WowService::class);
+        $response = $wowClient->getDataPetTypes();
+
+        $this->assertInstanceOf(RequestException::class, $response);
+
+        config(['battlenet-api.domain' => $oldDomain]);
     }
 }

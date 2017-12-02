@@ -3,7 +3,9 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Cache\Repository;
 
 /**
@@ -36,6 +38,13 @@ class BattlenetHttpClient
     protected $gameParam;
 
     /**
+     * Battle.net Connection Options
+     *
+     * @var Collection
+     */
+    protected $options;
+
+    /**
      * BattlnetHttpClient constructor.
      */
     public function __construct(Repository $repository)
@@ -49,11 +58,11 @@ class BattlenetHttpClient
     /**
      * Make request with API url and specific URL suffix.
      *
-     * @return Collection / GuzzleHttp\Exception\ClientException
+     * @return Collection|ClientException
      */
     protected function api()
     {
-        $maxAttempts = 1;
+        $maxAttempts = 0;
         $attempts = 0;
 
         $statusCodes = [
@@ -66,10 +75,10 @@ class BattlenetHttpClient
 
         do {
             try {
-                $response = $this->client->get($this->apiEndPoint, $this->options);
+                $response = $this->client->get($this->apiEndPoint, $this->options->toArray());
 
                 return collect(json_decode($response->getBody()->getContents()));
-            } catch (\Exception $e) {
+            } catch (ClientException $e) {
                 $statusCode = $e->getResponse()->getStatusCode();
                 $reasonPhrase = $e->getResponse()->getReasonPhrase();
 
@@ -79,9 +88,9 @@ class BattlenetHttpClient
                         $attempts++;
                         continue;
                     }
-                } else {
-                    $maxAttempts = $attempts;
                 }
+            } catch (RequestException $e) {
+
             }
         } while ($attempts < $maxAttempts);
 
@@ -91,60 +100,68 @@ class BattlenetHttpClient
     /**
      * Cache the api response data if cache set to true in config file.
      *
-     * @param string $urlSuffix API URL method
      * @param array  $options   Options
      * @param  string $method   method name
-     * @return Collection / GuzzleHttp\Exception\ClientException
+     * @param string $apiEndPoint
+     * @return Collection|ClientException
      */
-    public function cache($apiEndPoint, array $options, $method)
+    public function cache($apiEndPoint, $options = [], $method)
     {
+        // Make sure the options we got is a collection
+        $options = Collection::wrap($options);
+
         $this->options = $this->getQueryOptions($options);
         $this->apiEndPoint = $this->gameParam.$apiEndPoint;
 
-        $this->options['cache']['method'] = snake_case($method);
-        $uniqCacheKey = implode('.', [$this->cacheKey, implode('.', $this->options['cache'])]);
+        $this->buildCahceOptions($method);
 
-        if (true === $this->hasToCache()) {
+        if ($this->options->has('cache')) {
+            // The cache options are defined we need to cache the results
             return $this->cache->remember(
-                $uniqCacheKey,
-                $this->getCacheDuration(),
-                function () {
+                $this->options->get('cache')->get('uniqKey'),
+                $this->options->get('cache')->get('duration'),
+                function() {
                     return $this->api();
                 }
             );
-        } else {
-            return $this->api();
         }
+
+        return $this->api();
     }
 
     /**
      * Get default query options from configuration file.
      *
-     * @return array
+     * @return Collection
      */
     private function getDefaultOptions()
     {
-        return [
+        return collect([
             'locale' => $this->getLocale(),
             'apikey' => $this->getApiKey(),
-        ];
+        ]);
     }
 
     /**
      * Set default option if a 'query' key is provided
      * else create 'query' key with default options.
      *
-     * @param array $options
+     * @param Collection $options
      *
-     * @return Illuminate\Support\Collection api response
+     * @return Collection api response
      */
-    private function getQueryOptions(array $options = [])
+    private function getQueryOptions(Collection $options)
     {
-        if (isset($options['query'])) {
-            $options['query'] = $options['query'] + $this->getDefaultOptions();
-        } else {
-            $options['query'] = $this->getDefaultOptions();
+        // Make sure the query object is a collection.
+        $query = Collection::wrap($options->get('query'));
+
+        foreach ($this->getDefaultOptions() as $key => $option) {
+            if($query->has($key) === FALSE) {
+                $query->put($key, $option);
+            }
         }
+
+        $options->put('query',$query);
 
         return $options;
     }
@@ -179,13 +196,19 @@ class BattlenetHttpClient
         return config('battlenet-api.locale', 'eu');
     }
 
-    private function hasToCache()
+    private function buildCahceOptions($method)
     {
-        return config('battlenet-api.cache', true);
-    }
+        if (config('battlenet-api.cache', TRUE)) {
+            if($this->options->has('cache') === FALSE) {
+                // We don't have any cache options yet, build it from ground up.
+                $cacheOptions = collect();
 
-    private function getCacheDuration()
-    {
-        return config('battlenet-api.cache_duration', 600);
+                $cacheOptions->put('method', snake_case($method));
+                $cacheOptions->put('uniqKey', implode('.', [$this->cacheKey, $cacheOptions->get('method')]));
+                $cacheOptions->put('duration', config('battlenet-api.cache_duration', 600));
+
+                $this->options->put('cache',$cacheOptions);
+            }
+        }
     }
 }
