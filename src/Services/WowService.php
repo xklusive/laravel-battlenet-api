@@ -109,7 +109,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRegionLeaderboard(array $options = [])
     {
-        return $this->cache('/challenge/region/', $options, __FUNCTION__);
+        return $this->cache('/challenge/region', $options, __FUNCTION__);
     }
 
     /**
@@ -343,7 +343,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getRealmStatus(array $options = [])
     {
-        return $this->cache('/realm/', $options, __FUNCTION__);
+        return $this->cache('/realm/status', $options, __FUNCTION__);
     }
 
     /**
