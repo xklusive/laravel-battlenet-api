@@ -281,7 +281,22 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetStats($speciesId, array $options = [])
     {
-        return $this->cache('/pet/stats/'.(int) $speciesId, $options, __FUNCTION__);
+        $options = collect($options); // Create a collection from the options, easier to work with.
+
+        foreach ($options as $key => $option) {
+            if (in_array($key, ['level', 'breedId', 'qualityId'])) 
+            {
+                // We have some valid options for this query, lets add them to the query options
+                if ($options->has('query')) {
+                    // We already have some query options lets add the new ones to the list.
+                    $options->get('query')->put($key, $option);
+                } else {
+                    // We don't have any query options. Create a new collection and the first option to it.
+                    $options->put('query',collect([$key => $option]));
+                }
+            }
+        }
+        return $this->cache('/pet/stats/'.(int) $speciesId, $options->toArray(), __FUNCTION__);
     }
 
     /**
