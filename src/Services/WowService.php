@@ -2,8 +2,8 @@
 
 namespace Xklusive\BattlenetApi\Services;
 
-use Xklusive\BattlenetApi\BattlenetHttpClient;
 use Illuminate\Support\Collection;
+use Xklusive\BattlenetApi\BattlenetHttpClient;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
@@ -169,11 +169,11 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
-        $options = Collection::wrap($options);
+        $options = $this->wrapCollection($options);
 
         if ($options->has('query')) {
-            $query = Collection::wrap($options->get('query'));
-            $fields = Collection::wrap($query->get('fields'));
+            $query = $this->wrapCollection($options->get('query'));
+            $fields = $this->wrapCollection($query->get('fields'));
 
             if ($fields->isEmpty()) {
                 // The options doesn't contain a fields section which is required for this query.
@@ -181,7 +181,7 @@ class WowService extends BattlenetHttpClient
                 $query->put('fields', 'members');
             }
 
-            if ($fields->contains('members') === FALSE) {
+            if ($fields->contains('members') === false) {
                 // The options does contain a fileds element but 'members' is not part of it
                 // Lets add one 'members' to the list.
                 $fields->push('members');
@@ -195,7 +195,7 @@ class WowService extends BattlenetHttpClient
         }
 
         $query = collect();
-        $query->put('fields','members');
+        $query->put('fields', 'members');
 
         $options->put('query', $query);
 
@@ -304,7 +304,8 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetStats($speciesId, array $options = [])
     {
-        $options = collect($options); // Create a collection from the options, easier to work with.
+        // Create a collection from the options, easier to work with.
+        $options = $this->wrapCollection($options);
 
         foreach ($options as $key => $option) {
             if (in_array($key, ['level', 'breedId', 'qualityId'])) {
