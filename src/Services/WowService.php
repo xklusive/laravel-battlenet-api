@@ -2,8 +2,8 @@
 
 namespace Xklusive\BattlenetApi\Services;
 
-use Xklusive\BattlenetApi\BattlenetHttpClient;
 use Illuminate\Support\Collection;
+use Xklusive\BattlenetApi\BattlenetHttpClient;
 
 /**
  * @author Guillaume Meheust <xklusive91@gmail.com>
@@ -169,36 +169,26 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
-        $options = Collection::wrap($options);
+        $options = $this->wrapCollection($options);
+        $query = $this->wrapCollection($options->get('query'));
+        $fields = $this->wrapCollection($query->get('fields'));
 
-        if ($options->has('query')) {
-            $query = Collection::wrap($options->get('query'));
-            $fields = Collection::wrap($query->get('fields'));
-
-            if ($fields->isEmpty()) {
-                // The options doesn't contain a fields section which is required for this query.
-                // Lets add one with the default value 'members'
-                $query->put('fields', 'members');
-            }
-
-            if ($fields->contains('members') === FALSE) {
-                // The options does contain a fileds element but 'members' is not part of it
-                // Lets add one 'members' to the list.
-                $fields->push('members');
-                $query->put('fields', $fields->implode(','));
-            }
-
-            $options->put('query', $query);
-
-            // We already have everything we need, lets call the getGuild function to proceed
-            return $this->getGuild($realm, $guildName, $options->toArray());
+        if ($fields->isEmpty()) {
+            // The options doesn't contain a fields section which is required for this query.
+            // Lets add one with the default value 'members'
+            $query->put('fields', 'members');
         }
 
-        $query = collect();
-        $query->put('fields','members');
+        if ($fields->contains('members') === false) {
+            // The options does contain a fileds element but 'members' is not part of it
+            // Lets add one 'members' to the list.
+            $fields->push('members');
+            $query->put('fields', $fields->implode(','));
+        }
 
         $options->put('query', $query);
 
+        // We have everything what we need, lets call the getGuild function to proceed
         return $this->getGuild($realm, $guildName, $options->toArray());
     }
 
@@ -241,9 +231,9 @@ class WowService extends BattlenetHttpClient
      *
      * @return Illuminate\Support\Collection api response
      */
-    public function getMountMasterList()
+    public function getMountMasterList(array $options = [])
     {
-        return collect();
+        return collect($options);
     }
 
     /**
@@ -304,18 +294,19 @@ class WowService extends BattlenetHttpClient
      */
     public function getPetStats($speciesId, array $options = [])
     {
-        $options = collect($options); // Create a collection from the options, easier to work with.
+        // Create a collection from the options, easier to work with.
+        $options = $this->wrapCollection($options);
 
         foreach ($options as $key => $option) {
             if (in_array($key, ['level', 'breedId', 'qualityId'])) {
                 // We have some valid options for this query, lets add them to the query options
-                if ($options->has('query')) {
-                    // We already have some query options lets add the new ones to the list.
-                    $options->get('query')->put($key, $option);
-                } else {
-                    // We don't have any query options. Create a new collection and the first option to it.
-                    $options->put('query', collect([$key => $option]));
+                if ($options->has('query') === false) {
+                    // We don't have any query options. Lets create an empty collection.
+                    $options->put('query', collect());
                 }
+
+                // We already have some query options lets add the new ones to the list.
+                $options->get('query')->put($key, $option);
             }
         }
 
@@ -570,38 +561,5 @@ class WowService extends BattlenetHttpClient
     public function getDataPetTypes(array $options = [])
     {
         return $this->cache('/data/pet/types', $options, __FUNCTION__);
-    }
-
-    /**
-     * Get profile characters.
-     *
-     * This provides data about the current logged in OAuth user's - or the given user - WoW profile
-     *
-     * @param array $options Options
-     *
-     * @return Illuminate\Support\Collection api response
-     */
-    public function getProfileCharacters(array $options = [])
-    {
-        $access_token = array_key_exists('access_token', $options)
-                                ? $options['access_token']
-                                : auth()->user()->bnet_token;
-
-        $access_scope = array_key_exists('access_scope', $options)
-                                ? $options['access_scope']
-                                : auth()->user()->bnet_scope;
-
-        $user_id = array_key_exists('user_id', $options)
-                                ? $options['user_id']
-                                : auth()->user()->id;
-
-        $options['query']['access_token'] = $access_token;
-        $options['cache']['user_id'] = $user_id;
-
-        if (strpos($access_scope, 'wow.profile') === false) {
-            return;
-        } else {
-            return $this->cache('/user/characters', $options, __FUNCTION__);
-        }
     }
 }

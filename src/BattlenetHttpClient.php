@@ -3,9 +3,9 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Cache\Repository;
 
 /**
@@ -38,7 +38,7 @@ class BattlenetHttpClient
     protected $gameParam;
 
     /**
-     * Battle.net Connection Options
+     * Battle.net Connection Options.
      *
      * @var Collection
      */
@@ -69,7 +69,7 @@ class BattlenetHttpClient
             // Currently all status codes except the 503 is disabled and not handled
             '504' => [
                 'message' => 'Gateway Timeout',
-                'retry' => 5,
+                'retry' => 6,
             ],
         ];
 
@@ -90,7 +90,7 @@ class BattlenetHttpClient
                     }
                 }
             } catch (RequestException $e) {
-
+                // @TODO: Handle the RequestException ( when the provided domain is not valid )
             }
         } while ($attempts < $maxAttempts);
 
@@ -105,10 +105,10 @@ class BattlenetHttpClient
      * @param string $apiEndPoint
      * @return Collection|ClientException
      */
-    public function cache($apiEndPoint, $options = [], $method)
+    public function cache($apiEndPoint, array $options, $method)
     {
         // Make sure the options we got is a collection
-        $options = Collection::wrap($options);
+        $options = $this->wrapCollection($options);
 
         $this->options = $this->getQueryOptions($options);
         $this->apiEndPoint = $this->gameParam.$apiEndPoint;
@@ -120,7 +120,7 @@ class BattlenetHttpClient
             return $this->cache->remember(
                 $this->options->get('cache')->get('uniqKey'),
                 $this->options->get('cache')->get('duration'),
-                function() {
+                function () {
                     return $this->api();
                 }
             );
@@ -153,15 +153,15 @@ class BattlenetHttpClient
     private function getQueryOptions(Collection $options)
     {
         // Make sure the query object is a collection.
-        $query = Collection::wrap($options->get('query'));
+        $query = $this->wrapCollection($options->get('query'));
 
         foreach ($this->getDefaultOptions() as $key => $option) {
-            if($query->has($key) === FALSE) {
+            if ($query->has($key) === false) {
                 $query->put($key, $option);
             }
         }
 
-        $options->put('query',$query);
+        $options->put('query', $query);
 
         return $options;
     }
@@ -196,10 +196,29 @@ class BattlenetHttpClient
         return config('battlenet-api.locale', 'eu');
     }
 
+    /**
+     * This method wraps the given value in a collection when applicable.
+     *
+     * @return Collection
+     */
+    public function wrapCollection($collection)
+    {
+        if (is_a($collection, Collection::class) === true) {
+            return $collection;
+        }
+
+        return collect($collection);
+    }
+
+    /**
+     * Build the cache configuration.
+     *
+     * @param string $method
+     */
     private function buildCahceOptions($method)
     {
-        if (config('battlenet-api.cache', TRUE)) {
-            if($this->options->has('cache') === FALSE) {
+        if (config('battlenet-api.cache', true)) {
+            if ($this->options->has('cache') === false) {
                 // We don't have any cache options yet, build it from ground up.
                 $cacheOptions = collect();
 
@@ -207,7 +226,7 @@ class BattlenetHttpClient
                 $cacheOptions->put('uniqKey', implode('.', [$this->cacheKey, $cacheOptions->get('method')]));
                 $cacheOptions->put('duration', config('battlenet-api.cache_duration', 600));
 
-                $this->options->put('cache',$cacheOptions);
+                $this->options->put('cache', $cacheOptions);
             }
         }
     }
