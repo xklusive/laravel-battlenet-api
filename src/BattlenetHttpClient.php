@@ -203,7 +203,7 @@ class BattlenetHttpClient
      */
     public function wrapCollection($collection)
     {
-        if (is_a($collection,Collection::class) === true) {
+        if (is_a($collection, Collection::class) === true) {
             return $collection;
         }
 
@@ -211,7 +211,7 @@ class BattlenetHttpClient
     }
 
     /**
-     * Build the cache configuration
+     * Build the cache configuration.
      *
      * @param string $method
      */
