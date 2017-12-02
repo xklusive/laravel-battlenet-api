@@ -58,14 +58,6 @@ class BattlenetHttpClient
 
         $statusCodes = [
             // Currently all status codes except the 503 is disabled and not handled
-            // '401' => [
-            //     'message' => 'Unauthorized',
-            //     'retry' => 1,
-            // ],
-            // '403' => [
-            //     'message' => 'Forbidden',
-            //     'retry' => 1,
-            // ],
             '504' => [
                 'message' => 'Gateway Timeout',
                 'retry' => 5,

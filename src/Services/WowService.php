@@ -174,7 +174,7 @@ class WowService extends BattlenetHttpClient
             $options['fields'] = 'members';
         }
 
-        $options['query'] = $options; // this is a query options so we need to handle it like that.
+        $options['query'] = $options; // This is a query options so we need to handle it like that.
 
         return $this->getGuild($realm, $guildName, $options);
     }
@@ -576,7 +576,6 @@ class WowService extends BattlenetHttpClient
         $options['cache']['user_id'] = $user_id;
 
         if (strpos($access_scope, 'wow.profile') === false) {
-            // dd('We are not allowed to queyr this user WoW Profile, so there is no point to call the api hence returning NULL');
             return;
         } else {
             return $this->cache('/user/characters', $options, __FUNCTION__);
