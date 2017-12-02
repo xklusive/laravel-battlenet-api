@@ -4,8 +4,6 @@ namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-
-use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Cache\Repository;
 
 /**
@@ -59,18 +57,11 @@ class BattlenetHttpClient
         $attempts = 0;
 
         $statusCodes = [
-            // '401' => [
-            //     'message' => 'Unauthorized',
-            //     'retry' => 1,
-            // ],
-            // '403' => [
-            //     'message' => 'Forbidden',
-            //     'retry' => 1,
-            // ],
+            // Currently all status codes except the 503 is disabled and not handled
             '504' => [
                 'message' => 'Gateway Timeout',
                 'retry' => 5,
-            ]
+            ],
         ];
 
         do {
@@ -82,8 +73,8 @@ class BattlenetHttpClient
                 $statusCode = $e->getResponse()->getStatusCode();
                 $reasonPhrase = $e->getResponse()->getReasonPhrase();
 
-                if ( array_key_exists($statusCode, $statusCodes) ) {
-                    if ( $statusCodes[$statusCode]['message'] == $reasonPhrase) {
+                if (array_key_exists($statusCode, $statusCodes)) {
+                    if ($statusCodes[$statusCode]['message'] == $reasonPhrase) {
                         $maxAttempts = $statusCodes[$statusCode]['retry'];
                         $attempts++;
                         continue;
@@ -91,7 +82,7 @@ class BattlenetHttpClient
                 } else {
                     $maxAttempts = $attempts;
                 }
-            }    
+            }
         } while ($attempts < $maxAttempts);
 
         return $e;
@@ -111,13 +102,13 @@ class BattlenetHttpClient
         $this->apiEndPoint = $this->gameParam.$apiEndPoint;
 
         $this->options['cache']['method'] = snake_case($method);
-        $uniqCacheKey = implode('.',[$this->cacheKey,implode('.',$this->options['cache'])]);
+        $uniqCacheKey = implode('.', [$this->cacheKey, implode('.', $this->options['cache'])]);
 
         if (true === $this->hasToCache()) {
             return $this->cache->remember(
-                $uniqCacheKey, 
-                $this->getCacheDuration(), 
-                function () { 
+                $uniqCacheKey,
+                $this->getCacheDuration(),
+                function () {
                     return $this->api();
                 }
             );
@@ -152,7 +143,7 @@ class BattlenetHttpClient
         if (isset($options['query'])) {
             $options['query'] = $options['query'] + $this->getDefaultOptions();
         } else {
-            $options['query'] += $this->getDefaultOptions();
+            $options['query'] = $this->getDefaultOptions();
         }
 
         return $options;
