@@ -81,7 +81,7 @@ class BattlenetHttpClient
                 $statusCode = $e->getResponse()->getStatusCode();
                 $reasonPhrase = $e->getResponse()->getReasonPhrase();
 
-                if (array_key_exists($statusCode, $statusCodes) ) {
+                if (array_key_exists($statusCode, $statusCodes)) {
                     if ($statusCodes[$statusCode]['message'] == $reasonPhrase) {
                         $maxAttempts = $statusCodes[$statusCode]['retry'];
                         $attempts++;

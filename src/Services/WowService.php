@@ -168,7 +168,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getGuildMembers($realm, $guildName, array $options = [])
     {
-        if (array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false ) {
+        if (array_key_exists('fields', $options) && strpos($options['fields'], 'members') === false) {
             $options['fields'] = implode(',', [$options['fields'], 'members']);
         } else {
             $options['fields'] = 'members';
@@ -560,15 +560,15 @@ class WowService extends BattlenetHttpClient
      */
     public function getProfileCharacters(array $options = [])
     {
-        $access_token   = array_key_exists('access_token', $options)
+        $access_token = array_key_exists('access_token', $options)
                                 ? $options['access_token']
                                 : auth()->user()->bnet_token;
 
-        $access_scope   = array_key_exists('access_scope', $options)
+        $access_scope = array_key_exists('access_scope', $options)
                                 ? $options['access_scope']
                                 : auth()->user()->bnet_scope;
 
-        $user_id        = array_key_exists('user_id', $options)
+        $user_id = array_key_exists('user_id', $options)
                                 ? $options['user_id']
                                 : auth()->user()->id;
 
