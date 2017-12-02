@@ -152,7 +152,7 @@ class BattlenetHttpClient
         if (isset($options['query'])) {
             $options['query'] = $options['query'] + $this->getDefaultOptions();
         } else {
-            $options['query'] += $this->getDefaultOptions();
+            $options['query'] = $this->getDefaultOptions();
         }
 
         return $options;
