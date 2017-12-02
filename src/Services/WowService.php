@@ -574,25 +574,65 @@ class WowService extends BattlenetHttpClient
      */
     public function getProfileCharacters(array $options = [])
     {
-        $access_token = array_key_exists('access_token', $options)
-                                ? $options['access_token']
-                                : auth()->user()->bnet_token;
+        $options = $this->wrapCollection($options);
+        $query = $this->wrapCollection($options->get('query'));
+        $cache = $this->wrapCollection($options->get('cache'));
 
-        $access_scope = array_key_exists('access_scope', $options)
-                                ? $options['access_scope']
-                                : auth()->user()->bnet_scope;
+        $query->push('access_token',$this->getAccessToken($options));
+        $cache->push('user_id',$this->getUserId($options));
 
-        $user_id = array_key_exists('user_id', $options)
-                                ? $options['user_id']
-                                : auth()->user()->id;
-
-        $options['query']['access_token'] = $access_token;
-        $options['cache']['user_id'] = $user_id;
-
-        if (strpos($access_scope, 'wow.profile') === false) {
-            return;
-        } else {
-            return $this->cache('/user/characters', $options, __FUNCTION__);
+        if (strpos($this->getScope($options), 'wow.profile') === true) {
+            return $this->cache('/user/characters', $options->toArray(), __FUNCTION__);
         }
+
+        return;
+    }
+
+    /**
+     * Return the access token from the options, if it is provided.
+     * Otherwise get the logged in users access_token.
+     *
+     * @param array $options Options
+     *
+     * @return string access_token
+     */
+    private function getAccessToken(array $options = [])
+    {
+        $options = $this->wrapCollection($options);
+        return ($options->has('access_token') 
+            ? $options->get('access_token') 
+            : auth()->user()->bnet_token);
+    }
+
+    /**
+     * Return the access_scope from the options, if it is provided.
+     * Otherwise get the logged in users access_scope.
+     *
+     * @param array $options Options
+     *
+     * @return string access_scope
+     */
+    private function getScope(array $options = [])
+    {
+        $options = $this->wrapCollection($options);
+        return ($options->has('access_scope') 
+            ? $options->get('access_scope') 
+            : auth()->user()->bnet_scope);
+    }
+
+    /**
+     * Return the user_id from the options, if it is provided.
+     * Otherwise get the logged in users user_id.
+     *
+     * @param array $options Options
+     *
+     * @return string user_id
+     */
+    private function getUserId(array $options = [])
+    {
+        $options = $this->wrapCollection($options);
+        return ($options->has('user_id') 
+            ? $options->get('user_id') 
+            : auth()->user()->id);
     }
 }
