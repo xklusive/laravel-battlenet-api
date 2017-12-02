@@ -241,9 +241,9 @@ class WowService extends BattlenetHttpClient
      *
      * @return Illuminate\Support\Collection api response
      */
-    public function getMountMasterList()
+    public function getMountMasterList(array $options = [])
     {
-        return collect();
+        return collect($options);
     }
 
     /**
@@ -310,13 +310,13 @@ class WowService extends BattlenetHttpClient
         foreach ($options as $key => $option) {
             if (in_array($key, ['level', 'breedId', 'qualityId'])) {
                 // We have some valid options for this query, lets add them to the query options
-                if ($options->has('query')) {
-                    // We already have some query options lets add the new ones to the list.
-                    $options->get('query')->put($key, $option);
-                } else {
-                    // We don't have any query options. Create a new collection and the first option to it.
-                    $options->put('query', collect([$key => $option]));
+                if ($options->has('query') === false) {
+                    // We don't have any query options. Lets create an empty collection.
+                    $options->put('query', collect());
                 }
+
+                // We already have some query options lets add the new ones to the list.
+                $options->get('query')->put($key, $option);
             }
         }
 

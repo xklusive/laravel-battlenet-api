@@ -69,7 +69,7 @@ class BattlenetHttpClient
             // Currently all status codes except the 503 is disabled and not handled
             '504' => [
                 'message' => 'Gateway Timeout',
-                'retry' => 5,
+                'retry' => 6,
             ],
         ];
 
@@ -90,7 +90,7 @@ class BattlenetHttpClient
                     }
                 }
             } catch (RequestException $e) {
-
+                // @TODO: Handle the RequestException ( when the provided domain is not valid )
             }
         } while ($attempts < $maxAttempts);
 
@@ -105,7 +105,7 @@ class BattlenetHttpClient
      * @param string $apiEndPoint
      * @return Collection|ClientException
      */
-    public function cache($apiEndPoint, array $options = [], $method)
+    public function cache($apiEndPoint, array $options, $method)
     {
         // Make sure the options we got is a collection
         $options = $this->wrapCollection($options);
@@ -197,23 +197,28 @@ class BattlenetHttpClient
     }
 
     /**
-     * This method wraps the given value in a collection when applicable:
+     * This method wraps the given value in a collection when applicable.
      *
      * @return Collection
      */
     public function wrapCollection($collection)
     {
-        if(is_a($collection,Collection::class) === true) {
+        if (is_a($collection,Collection::class) === true) {
             return $collection;
         }
 
         return collect($collection);
     }
 
+    /**
+     * Build the cache configuration
+     *
+     * @param string $method
+     */
     private function buildCahceOptions($method)
     {
         if (config('battlenet-api.cache', true)) {
-            if($this->options->has('cache') === false) {
+            if ($this->options->has('cache') === false) {
                 // We don't have any cache options yet, build it from ground up.
                 $cacheOptions = collect();
 
