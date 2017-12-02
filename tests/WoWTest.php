@@ -19,6 +19,8 @@ class WowTest extends TestCase
     protected $petQualityId = 4;
     protected $pvpBracket = '2v2';
     protected $questId = 13146;
+    protected $recipeId = 33994;
+    protected $spellId = 133; // Fireball
 
     public function setUp()
     {
@@ -251,13 +253,56 @@ class WowTest extends TestCase
     }
 
     /** @test */
-    public function api_can_fetch()
+    public function api_can_fetch_a_recipe()
     {
-        $response = $this->wow->getRealmLeaderboard($this->realm);
-
-        // dd($response);
+        $response = $this->wow->getRecipe($this->recipeId);
 
         $this->assertInstanceOf(Collection::class, $response);
-        $this->assertArrayHasKey('name', $response->toArray());
+        $this->assertArrayHasKey('id', $response->toArray());
+        $this->assertEquals($this->recipeId,$response->get('id'));
+    }
+
+    /** @test */
+    public function api_can_fetch_a_spell()
+    {
+        $response = $this->wow->getSpell($this->spellId);
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('id', $response->toArray());
+        $this->assertEquals($this->spellId,$response->get('id'));
+    }
+
+    /** @test */
+    public function api_can_fetch_zone_master_list()
+    {
+        $response = $this->wow->getZonesMasterList();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('zones', $response->toArray());
+        $this->assertObjectHasAttribute('id', $response->get('zones')[0]);
+        $this->assertObjectHasAttribute('name', $response->get('zones')[0]);
+        $this->assertObjectHasAttribute('expansionId', $response->get('zones')[0]);
+    }
+
+    /** @test */
+    public function api_can_fetch_zone_details()
+    {
+        $zoneId = $this->wow->getZonesMasterList()->get('zones')[0]->id;
+        $response = $this->wow->getZone($zoneId);
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('id', $response->toArray());
+        $this->assertEquals($zoneId, $response->get('id'));
+    }
+
+    /** @test */
+    public function api_can_fetch_battlegroup_data()
+    {
+        $response = $this->wow->getDataBattlegroups();
+
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertArrayHasKey('battlegroups', $response->toArray());
+        $this->assertObjectHasAttribute('name', $response->get('battlegroups')[0]);
+        $this->assertObjectHasAttribute('slug', $response->get('battlegroups')[0]);
     }
 }

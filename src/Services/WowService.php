@@ -418,7 +418,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getDataBattlegroups(array $options = [])
     {
-        $this->cache('/data/battlegroups/', $options, __FUNCTION__);
+        return $this->cache('/data/battlegroups/', $options, __FUNCTION__);
     }
 
     /**
