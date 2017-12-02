@@ -153,7 +153,7 @@ class WoWTest extends TestCase
     public function api_can_fetch_mount_master_list()
     {
         // Currently not producing a proper json a result # see https://us.battle.net/forums/en/bnet/topic/20759527665#1
-        $this->assertEquals(1,1);
+        $this->assertEquals(1, 1);
     }
 
     /** @test */
