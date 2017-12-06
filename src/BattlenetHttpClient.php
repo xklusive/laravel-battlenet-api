@@ -94,7 +94,7 @@ class BattlenetHttpClient
             }
         } while ($attempts < $maxAttempts);
 
-        return $e;
+        throw $e;
     }
 
     /**
