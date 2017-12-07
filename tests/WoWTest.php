@@ -406,28 +406,6 @@ class WoWTest extends TestCase
     }
 
     /** @test */
-    public function api_should_fail_if_the_given_URL_is_invalid()
-    {
-	$this->expectException(ClientException::class);
-
-        $response = $this->wow->getRecipe('invalid');
-    }
-
-    /** @test */
-    public function api_should_fail_if_given_battlenet_domain_is_invalid()
-    {
-	$this->expectException(RequestException::class);
-
-        $oldDomain = config('battlenet-api.domain');
-        config(['battlenet-api.domain' => 'not a valid domain']);
-
-        $wowClient = app(\Xklusive\BattlenetApi\Services\WowService::class);
-        $response = $wowClient->getDataPetTypes();
-
-        config(['battlenet-api.domain' => $oldDomain]);
-    }
-
-    /** @test */
     public function api_can_fetch_talent_data()
     {
         $response = $this->wow->getDataTalents();
@@ -438,4 +416,24 @@ class WoWTest extends TestCase
         $this->assertObjectHasAttribute('role', $response->first()->specs[0]);
     }
 
+    /** @test */
+    public function api_should_fail_if_the_given_URL_is_invalid()
+    {
+        $this->expectException(ClientException::class);
+        $response = $this->wow->getRecipe('invalid');
+    }
+
+    /** @test */
+    public function api_should_fail_if_given_battlenet_domain_is_invalid()
+    {
+        $this->expectException(RequestException::class);
+
+        $oldDomain = config('battlenet-api.domain');
+        config(['battlenet-api.domain' => 'not a valid domain']);
+
+        $wowClient = app(\Xklusive\BattlenetApi\Services\WowService::class);
+        $response = $wowClient->getDataPetTypes();
+
+        config(['battlenet-api.domain' => $oldDomain]);
+    }
 }
