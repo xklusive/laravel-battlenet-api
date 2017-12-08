@@ -4,7 +4,6 @@ namespace Xklusive\BattlenetApi\Test;
 
 use Illuminate\Support\Collection;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
 
 class DiabloTest extends TestCase
 {
@@ -30,7 +29,7 @@ class DiabloTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('battleTag', $response->toArray());
-        $this->assertEquals($this->battleTag, strtolower(str_replace("#", "-", $response->get('battleTag'))));
+        $this->assertEquals($this->battleTag, strtolower(str_replace('#', '-', $response->get('battleTag'))));
     }
 
     /** @test */
@@ -83,7 +82,7 @@ class DiabloTest extends TestCase
     /** @test */
     public function api_can_fetch_follower_data()
     {
-        $rand = rand(0,2);
+        $rand = rand(0, 2);
         $response = $this->diablo->getFollowerData($this->followers[$rand]);
 
         $this->assertInstanceOf(Collection::class, $response);
@@ -102,7 +101,7 @@ class DiabloTest extends TestCase
     /** @test */
     public function api_can_fetch_artisan_data()
     {
-        $rand = rand(0,2);
+        $rand = rand(0, 2);
         $response = $this->diablo->getArtisanData($this->artisans[$rand]);
 
         $this->assertInstanceOf(Collection::class, $response);
