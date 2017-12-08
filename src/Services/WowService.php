@@ -562,4 +562,21 @@ class WowService extends BattlenetHttpClient
     {
         return $this->cache('/data/pet/types', $options, __FUNCTION__);
     }
+
+    /**
+     * Get profile characters.
+     *
+     * This provides data about the current logged in OAuth user's WoW profile
+     *
+     * @param array $options Options
+     *
+     * @param string $bnetToken Access token of the current logged in user.
+     * @return Illuminate\Support\Collection api response
+     */
+    public function getProfileCharacters(array $options = [], $bnetToken = null)
+    {
+        $options['access_token'] = $bnetToken ?? auth()->user()->bnet_token;
+
+        return $this->cache('/user/characters', $options, __FUNCTION__);
+    }
 }
