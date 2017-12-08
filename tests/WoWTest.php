@@ -446,5 +446,6 @@ class WoWTest extends TestCase
         $options = [];
         $this->wow->getProfileCharacters($options, $this->bnet_token);
     }
+
     //@TODO : add a test that assert getProfileCharacters() passed.
 }
