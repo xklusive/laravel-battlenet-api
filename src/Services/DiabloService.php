@@ -15,9 +15,8 @@ class DiabloService extends BattlenetHttpClient
      */
     protected $gameParam = '/d3';
 
-
     /**
-     * Get a Hero profile data
+     * Get a Hero profile data.
      *
      * Returns the hero profile of a Battle Tag's hero
      *
@@ -31,7 +30,7 @@ class DiabloService extends BattlenetHttpClient
     }
 
     /**
-     * Get profile information
+     * Get profile information.
      *
      * Returns the hero profile of a Battle Tag's hero
      *
@@ -46,7 +45,7 @@ class DiabloService extends BattlenetHttpClient
     }
 
     /**
-     * Get data about an item
+     * Get data about an item.
      *
      * Returns data for a profile item
      *
@@ -60,7 +59,7 @@ class DiabloService extends BattlenetHttpClient
     }
 
     /**
-     * Get data about a follower
+     * Get data about a follower.
      *
      * Returns data for a follower
      *
@@ -74,7 +73,7 @@ class DiabloService extends BattlenetHttpClient
     }
 
     /**
-     * Get data about an artisan
+     * Get data about an artisan.
      *
      * Returns data for an artisan
      *
