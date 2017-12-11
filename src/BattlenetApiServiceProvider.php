@@ -3,8 +3,8 @@
 namespace Xklusive\BattlenetApi;
 
 use Illuminate\Support\ServiceProvider;
-use Xklusive\BattlenetApi\Services\DiabloService;
 use Xklusive\BattlenetApi\Services\WowService;
+use Xklusive\BattlenetApi\Services\DiabloService;
 
 class BattlenetApiServiceProvider extends ServiceProvider
 {
