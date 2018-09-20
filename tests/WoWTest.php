@@ -24,6 +24,7 @@ class WoWTest extends TestCase
     protected $questId = 13146;
     protected $recipeId = 33994;
     protected $spellId = 133;
+    protected $bnet_token = '69ywne7vypnkhtnzhc64ufcv';
 
     public function setUp()
     {
@@ -436,4 +437,15 @@ class WoWTest extends TestCase
 
         config(['battlenet-api.domain' => $oldDomain]);
     }
+
+    /** @test */
+    public function api_should_fail_if_access_token_is_expired()
+    {
+        $this->expectException(ClientException::class);
+
+        $options = [];
+        $this->wow->getProfileCharacters($options, $this->bnet_token);
+    }
+
+    //@TODO : add a test that assert getProfileCharacters() passed.
 }

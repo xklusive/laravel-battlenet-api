@@ -3,6 +3,7 @@
 namespace Xklusive\BattlenetApi;
 
 use Illuminate\Support\ServiceProvider;
+use Xklusive\BattlenetApi\Services\DiabloService;
 use Xklusive\BattlenetApi\Services\WowService;
 
 class BattlenetApiServiceProvider extends ServiceProvider
@@ -32,5 +33,6 @@ class BattlenetApiServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('WowService', WowService::class);
+        $this->app->bind('DiabloService', DiabloService::class);
     }
 }
