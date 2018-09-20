@@ -48,8 +48,8 @@ class DiabloTest extends TestCase
         $this->expectException(ClientException::class);
         $response = $this->diablo->getHeroProfile($this->battleTag, 'a');
 
-        #$this->assertArrayHasKey('code', $response->toArray());
-        #$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
+        //$this->assertArrayHasKey('code', $response->toArray());
+        //$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
     }
 
     /** @test */
@@ -58,8 +58,8 @@ class DiabloTest extends TestCase
         $this->expectException(ClientException::class);
         $response = $this->diablo->getCareerProfile('aaaa');
 
-        #$this->assertArrayHasKey('code', $response->toArray());
-        #$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
+        //$this->assertArrayHasKey('code', $response->toArray());
+        //$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class DiabloTest extends TestCase
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
         $this->assertArrayHasKey('name', $response->toArray());
-        $this->assertEquals($this->itemDataString, sprintf('%s-%s',$response->get('slug'),$response->get('id')));
+        $this->assertEquals($this->itemDataString, sprintf('%s-%s', $response->get('slug'), $response->get('id')));
     }
 
     /** @test */
