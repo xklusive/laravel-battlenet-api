@@ -233,7 +233,7 @@ class WowService extends BattlenetHttpClient
      */
     public function getMountMasterList(array $options = [])
     {
-        return collect($options);
+        return $this->cache('/mount/', $options, __FUNCTION__);
     }
 
     /**
