@@ -2,9 +2,15 @@
 
 namespace Xklusive\BattlenetApi;
 
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Cache\Repository;
 
@@ -46,6 +52,8 @@ class BattlenetHttpClient
 
     /**
      * BattlnetHttpClient constructor.
+     *
+     * @param $repository Illuminate\Contracts\Cache\Repository
      */
     public function __construct(Repository $repository)
     {
@@ -56,6 +64,48 @@ class BattlenetHttpClient
     }
 
     /**
+     * Creates a Mock Response based on the given array.
+     * Used to imitate API response from Blizzard, without calling the actual API.
+     *
+     * @param $responses array
+     */
+    public function createMockResponse(array $responses = null) {
+	$returnStack = collect([]);
+
+	if ($responses) {
+		foreach ($responses as $response) {
+			if ($response->has('code') and $response->has('response')) {
+				$stream = Psr7\stream_for($response->get('response'));
+				$api_response = new Response(
+					$response->get('code'), 
+					['Content-Type' => 'application/json'], 
+					$stream
+				);
+				$returnStack->push($api_response);
+			}
+		}
+	}
+
+	$mock = new MockHandler($returnStack->toArray());
+	$this->setGuzzHandler(HandlerStack::create($mock));
+    }
+
+    /**
+     * Create a new client with the given handler. 
+     * Right now only used for testing.
+     *
+     * @param $handler GuzzleHttp\HandlerStack
+     */
+    protected function setGuzzHandler(HandlerStack $handler = null) {
+        if ($handler) {
+            $this->client = new Client([
+		'handler' => $handler,
+		'base_uri' => $this->getApiEndPoint(),
+            ]);
+	}
+    }
+
+   /**
      * Make request with API url and specific URL suffix.
      *
      * @return Collection|ClientException
@@ -63,38 +113,66 @@ class BattlenetHttpClient
     protected function api()
     {
         $maxAttempts = 0;
-        $attempts = 0;
+	$attempts = 0;
 
-        $statusCodes = [
-            // Currently all status codes except the 503 is disabled and not handled
-            '504' => [
-                'message' => 'Gateway Timeout',
-                'retry' => 6,
-            ],
-        ];
+	$serverCodes = collect([
+	    '504' => collect([
+                'message' => 'Gateway Time-out',
+                'retry' => 3,
+	    ]),
+        ]);
 
         do {
             try {
                 $response = $this->client->get($this->apiEndPoint, $this->options->toArray());
+		$response = collect(json_decode($response->getBody()->getContents()));
 
-                return collect(json_decode($response->getBody()->getContents()));
-            } catch (ClientException $e) {
-                $statusCode = $e->getResponse()->getStatusCode();
-                $reasonPhrase = $e->getResponse()->getReasonPhrase();
+		if ($attempts > 0) {
+			$response->put('attempts',$attempts);
+		}
 
-                if (array_key_exists($statusCode, $statusCodes)) {
-                    if ($statusCodes[$statusCode]['message'] == $reasonPhrase) {
-                        $maxAttempts = $statusCodes[$statusCode]['retry'];
+                return $response;
+            } catch (ServerException $e) {
+                // Catch Server errors ( return code 5xx )
+                if ($e->hasResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+                    $reasonPhrase = $e->getResponse()->getReasonPhrase();
+                }
+
+                if ($serverCodes->has($statusCode)) {
+                    if ($serverCodes->get($statusCode)->get('message') == $reasonPhrase) {
+                        $maxAttempts = $serverCodes->get($statusCode)->get('retry');
                         $attempts++;
                         continue;
                     }
+		}
+
+	    } catch (ClientException $e) {
+		// @TODO: Handle the ClientException ( HTTP 4xx codes )
+                if ($e->hasResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+                    $reasonPhrase = $e->getResponse()->getReasonPhrase();
                 }
             } catch (RequestException $e) {
                 // @TODO: Handle the RequestException ( when the provided domain is not valid )
+                if ($e->hasResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+                    $reasonPhrase = $e->getResponse()->getReasonPhrase();
+                }
             }
         } while ($attempts < $maxAttempts);
 
-        throw $e;
+	if ($statusCode and $reasonPhrase) {
+	    return (collect([
+	        'error' => collect([
+		    'code' => $statusCode,
+		    'message' => $reasonPhrase,
+		    'attempts' => $attempts
+		])
+	    ]));
+	}
+	
+	throw $e;
     }
 
     /**
