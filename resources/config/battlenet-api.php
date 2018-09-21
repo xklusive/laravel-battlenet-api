@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'api_key' => env('BATTLENET_KEY',''),
+    'api_key' => env('BATTLENET_KEY', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     | For examples: en_GB | fr_FR | de_DE | ru_RU
     |
     */
-    'locale' => env('BATTLENET_LOCAL','en_US'),
+    'locale' => env('BATTLENET_LOCAL', 'en_US'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     | For example, if you want to request on the Europe region: 'https://eu.api.battle.net'
     |
     */
-    'domain' => 'https://'.env('BATTLENET_REGION','eu').'.api.battle.net',
+    'domain' => 'https://'.env('BATTLENET_REGION', 'eu').'.api.battle.net',
 
     /*
     |--------------------------------------------------------------------------
