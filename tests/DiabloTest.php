@@ -9,9 +9,9 @@ class DiabloTest extends TestCase
 {
     protected $diablo;
     protected $notFoundResponseCode = 'NOTFOUND';
-    protected $battleTag = 'xklusive-2711';
-    protected $heroId = '67482825';
-    protected $itemDataString = 'Unique_Sword_1H_101_x1';
+    protected $battleTag = 'Atraides#2274';
+    protected $heroId = '96206105';
+    protected $itemDataString = 'corrupted-ashbringer-Unique_Sword_2H_104_x1';
     protected $followers = ['enchantress', 'templar', 'scoundrel'];
     protected $artisans = ['blacksmith', 'mystic', 'jeweler'];
 
@@ -29,7 +29,7 @@ class DiabloTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('battleTag', $response->toArray());
-        $this->assertEquals($this->battleTag, strtolower(str_replace('#', '-', $response->get('battleTag'))));
+        $this->assertEquals($this->battleTag, $response->get('battleTag'));
     }
 
     /** @test */
@@ -45,19 +45,21 @@ class DiabloTest extends TestCase
     /** @test */
     public function api_should_fail_if_hero_id_is_invalid()
     {
+        $this->expectException(ClientException::class);
         $response = $this->diablo->getHeroProfile($this->battleTag, 'a');
 
-        $this->assertArrayHasKey('code', $response->toArray());
-        $this->assertEquals($this->notFoundResponseCode, $response->get('code'));
+        //$this->assertArrayHasKey('code', $response->toArray());
+        //$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
     }
 
     /** @test */
     public function api_should_fail_if_battletag_is_invalid()
     {
+        $this->expectException(ClientException::class);
         $response = $this->diablo->getCareerProfile('aaaa');
 
-        $this->assertArrayHasKey('code', $response->toArray());
-        $this->assertEquals($this->notFoundResponseCode, $response->get('code'));
+        //$this->assertArrayHasKey('code', $response->toArray());
+        //$this->assertEquals($this->notFoundResponseCode, $response->get('code'));
     }
 
     /** @test */
@@ -68,7 +70,7 @@ class DiabloTest extends TestCase
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('id', $response->toArray());
         $this->assertArrayHasKey('name', $response->toArray());
-        $this->assertEquals($this->itemDataString, $response->get('id'));
+        $this->assertEquals($this->itemDataString, sprintf('%s-%s', $response->get('slug'), $response->get('id')));
     }
 
     /** @test */

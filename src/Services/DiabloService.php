@@ -26,7 +26,7 @@ class DiabloService extends BattlenetHttpClient
      */
     public function getCareerProfile($battleTag, ...$options)
     {
-        return $this->cache('/profile/'.(string) $battleTag.'/', $options, __FUNCTION__);
+        return $this->cache('/profile/'.(string) urlencode($battleTag).'/', $options, __FUNCTION__);
     }
 
     /**
@@ -41,7 +41,7 @@ class DiabloService extends BattlenetHttpClient
      */
     public function getHeroProfile($battleTag, $heroId, ...$options)
     {
-        return $this->cache('/profile/'.(string) $battleTag.'/hero/'.(int) $heroId, $options, __FUNCTION__);
+        return $this->cache('/profile/'.(string) urlencode($battleTag).'/hero/'.(int) $heroId, $options, __FUNCTION__);
     }
 
     /**

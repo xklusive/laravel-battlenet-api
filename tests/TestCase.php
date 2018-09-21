@@ -16,7 +16,7 @@ abstract class TestCase extends Orchestra
     {
         $app['config']->set('battlenet-api', [
             'domain'   => 'https://eu.api.battle.net',
-            'api_key' => 'trjejxvhkw9s49etr4qpubg4h4qndjqm', // Used for testing. Do not use this in your production environment
+            'api_key' => '6fx2x867udyab392a8uwnwrancqv52rc', // Used for testing. Do not use this in your production environment
             'locale'   => 'en_GB',
             'cache'   => false,
             'cache_duration'   => 600,
