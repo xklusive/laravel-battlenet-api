@@ -9,6 +9,8 @@
 [![StyleCI](https://styleci.io/repos/79335460/shield)](https://styleci.io/repos/79335460)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dd19ac3e70f44957b76f9d18c4bf3eaa)](https://www.codacy.com/app/atraides/laravel-battlenet-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=xklusive/laravel-battlenet-api&amp;utm_campaign=Badge_Grade)
 [![Total Downloads](https://img.shields.io/packagist/dt/xklusive/laravel-battlenet-api.svg?style=flat-square)](https://packagist.org/packages/xklusive/laravel-battlenet-api)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/xklusive/laravel-battlenet-api.svg)](http://isitmaintained.com/project/xklusive/laravel-battlenet-api "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/xklusive/laravel-battlenet-api.svg)](http://isitmaintained.com/project/xklusive/laravel-battlenet-api "Percentage of issues still open")
 
 This package allows to call the Battle.net API.
 
