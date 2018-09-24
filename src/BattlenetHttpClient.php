@@ -3,12 +3,12 @@
 namespace Xklusive\BattlenetApi;
 
 use GuzzleHttp\Psr7;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\RequestException;
@@ -69,43 +69,45 @@ class BattlenetHttpClient
      *
      * @param $responses array
      */
-    public function createMockResponse(array $responses = null) {
-	$returnStack = collect([]);
+    public function createMockResponse(array $responses = null)
+    {
+        $returnStack = collect([]);
 
-	if ($responses) {
-		foreach ($responses as $response) {
-			if ($response->has('code') and $response->has('response')) {
-				$stream = Psr7\stream_for($response->get('response'));
-				$api_response = new Response(
-					$response->get('code'), 
-					['Content-Type' => 'application/json'], 
-					$stream
-				);
-				$returnStack->push($api_response);
-			}
-		}
-	}
+        if ($responses) {
+            foreach ($responses as $response) {
+                if ($response->has('code') and $response->has('response')) {
+                    $stream = Psr7\stream_for($response->get('response'));
+                    $api_response = new Response(
+                    $response->get('code'),
+                    ['Content-Type' => 'application/json'],
+                    $stream
+                );
+                    $returnStack->push($api_response);
+                }
+            }
+        }
 
-	$mock = new MockHandler($returnStack->toArray());
-	$this->setGuzzHandler(HandlerStack::create($mock));
+        $mock = new MockHandler($returnStack->toArray());
+        $this->setGuzzHandler(HandlerStack::create($mock));
     }
 
     /**
-     * Create a new client with the given handler. 
+     * Create a new client with the given handler.
      * Right now only used for testing.
      *
      * @param $handler GuzzleHttp\HandlerStack
      */
-    protected function setGuzzHandler(HandlerStack $handler = null) {
+    protected function setGuzzHandler(HandlerStack $handler = null)
+    {
         if ($handler) {
             $this->client = new Client([
-		'handler' => $handler,
-		'base_uri' => $this->getApiEndPoint(),
+        'handler' => $handler,
+        'base_uri' => $this->getApiEndPoint(),
             ]);
-	}
+        }
     }
 
-   /**
+    /**
      * Make request with API url and specific URL suffix.
      *
      * @return Collection|ClientException
@@ -113,23 +115,25 @@ class BattlenetHttpClient
     protected function api()
     {
         $maxAttempts = 0;
-	$attempts = 0;
+        $attempts = 0;
+	$statusCode = null;
+	$reasonPhrease = null;
 
-	$serverCodes = collect([
-	    '504' => collect([
+        $serverCodes = collect([
+        '504' => collect([
                 'message' => 'Gateway Time-out',
                 'retry' => 3,
-	    ]),
+        ]),
         ]);
 
         do {
             try {
                 $response = $this->client->get($this->apiEndPoint, $this->options->toArray());
-		$response = collect(json_decode($response->getBody()->getContents()));
+                $response = collect(json_decode($response->getBody()->getContents()));
 
-		if ($attempts > 0) {
-			$response->put('attempts',$attempts);
-		}
+                if ($attempts > 0) {
+                    $response->put('attempts', $attempts);
+                }
 
                 return $response;
             } catch (ServerException $e) {
@@ -145,10 +149,9 @@ class BattlenetHttpClient
                         $attempts++;
                         continue;
                     }
-		}
-
-	    } catch (ClientException $e) {
-		// @TODO: Handle the ClientException ( HTTP 4xx codes )
+                }
+            } catch (ClientException $e) {
+                // @TODO: Handle the ClientException ( HTTP 4xx codes )
                 if ($e->hasResponse()) {
                     $statusCode = $e->getResponse()->getStatusCode();
                     $reasonPhrase = $e->getResponse()->getReasonPhrase();
@@ -158,21 +161,24 @@ class BattlenetHttpClient
                 if ($e->hasResponse()) {
                     $statusCode = $e->getResponse()->getStatusCode();
                     $reasonPhrase = $e->getResponse()->getReasonPhrase();
-                }
+		} else {
+		    $statusCode = 909;
+		    $reasonPhrase = 'Unable to resolve API domain';
+		}
             }
         } while ($attempts < $maxAttempts);
 
-	if ($statusCode and $reasonPhrase) {
-	    return (collect([
-	        'error' => collect([
-		    'code' => $statusCode,
-		    'message' => $reasonPhrase,
-		    'attempts' => $attempts
-		])
-	    ]));
-	}
-	
-	throw $e;
+        if ($statusCode and $reasonPhrase) {
+            return collect([
+                'error' => collect([
+                'code' => $statusCode,
+                'message' => $reasonPhrase,
+                'attempts' => $attempts,
+            ]),
+        ]);
+        }
+
+        throw $e;
     }
 
     /**
