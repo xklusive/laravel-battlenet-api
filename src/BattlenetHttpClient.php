@@ -51,6 +51,13 @@ class BattlenetHttpClient
     protected $options;
 
     /**
+     * API endpoint URL.
+     *
+     * @var string;
+     */
+    protected $apiEndPoint;
+
+    /**
      * BattlnetHttpClient constructor.
      *
      * @param $repository Illuminate\Contracts\Cache\Repository
@@ -78,10 +85,10 @@ class BattlenetHttpClient
                 if ($response->has('code') and $response->has('response')) {
                     $stream = Psr7\stream_for($response->get('response'));
                     $api_response = new Response(
-                    $response->get('code'),
-                    ['Content-Type' => 'application/json'],
-                    $stream
-                );
+                        $response->get('code'),
+                        ['Content-Type' => 'application/json'],
+                        $stream
+                    );
                     $returnStack->push($api_response);
                 }
             }
@@ -101,8 +108,8 @@ class BattlenetHttpClient
     {
         if ($handler) {
             $this->client = new Client([
-        'handler' => $handler,
-        'base_uri' => $this->getApiEndPoint(),
+                'handler' => $handler,
+                'base_uri' => $this->getApiEndPoint(),
             ]);
         }
     }
@@ -116,14 +123,14 @@ class BattlenetHttpClient
     {
         $maxAttempts = 0;
         $attempts = 0;
-	$statusCode = null;
-	$reasonPhrease = null;
+        $statusCode = null;
+        $reasonPhrase = null;
 
         $serverCodes = collect([
-        '504' => collect([
+            '504' => collect([
                 'message' => 'Gateway Time-out',
                 'retry' => 3,
-        ]),
+            ]),
         ]);
 
         do {
@@ -161,25 +168,25 @@ class BattlenetHttpClient
                 if ($e->hasResponse()) {
                     $statusCode = $e->getResponse()->getStatusCode();
                     $reasonPhrase = $e->getResponse()->getReasonPhrase();
-		} else {
-		    $statusCode = 909;
-		    $reasonPhrase = 'Unable to resolve API domain';
-		}
-            }
-        } while ($attempts < $maxAttempts);
+                } else {
+                  $statusCode = 909;
+                  $reasonPhrase = 'Unable to resolve API domain';
+              }
+          }
+      } while ($attempts < $maxAttempts);
 
-        if ($statusCode and $reasonPhrase) {
-            return collect([
-                'error' => collect([
+      if ($statusCode and $reasonPhrase) {
+        return collect([
+            'error' => collect([
                 'code' => $statusCode,
                 'message' => $reasonPhrase,
                 'attempts' => $attempts,
             ]),
         ]);
-        }
-
-        throw $e;
     }
+
+    throw $e;
+}
 
     /**
      * Cache the api response data if cache set to true in config file.
