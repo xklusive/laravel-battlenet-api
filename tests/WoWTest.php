@@ -3,8 +3,6 @@
 namespace Xklusive\BattlenetApi\Test;
 
 use Illuminate\Support\Collection;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
 
 class WoWTest extends TestCase
 {
@@ -36,12 +34,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_wow_achievements()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id": "%s"}',$this->achievementId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id": "%s"}', $this->achievementId),
+        ]),
+    ]);
 
         $response = $this->wow->getAchievement($this->achievementId);
 
@@ -53,19 +51,19 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_auction_data()
     {
-       	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{
 		    "files": [{
 		        "url": "http://auction-api-us.worldofwarcraft.com/auction-data/ea1e6287176b1df948bb9155957eb623/auctions.json",
 			"lastModified": 1537538519000
                     }]
-                }'
-	    ])
+                }',
+        ]),
         ]);
 
-	$response = $this->wow->getAuctionDataStatus($this->realm);
+        $response = $this->wow->getAuctionDataStatus($this->realm);
 
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertArrayHasKey('files', $response->toArray());
@@ -75,18 +73,18 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_supported_bosses()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{
 		    "bosses": [{
 		        "id": 86217,
 			"name": "Vigilant Kaathar",
 			"urlSlug": "vigilant-kaathar"
                     }]
-                }'
-	    ])
-	]);
+                }',
+        ]),
+    ]);
 
         $response = $this->wow->getBossMasterList();
 
@@ -97,26 +95,26 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_a_boss()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{
 		    "bosses": [{
 		        "id": 86217,
 			"name": "Vigilant Kaathar",
 			"urlSlug": "vigilant-kaathar"
                     }]
-                }'
-	    ]),
-	    collect([
-		'code' => 200,
-		'response' => '{
+                }',
+        ]),
+        collect([
+        'code' => 200,
+        'response' => '{
 		    "id": 86217,
 		    "name": "Vigilant Kaathar",
 		    "urlSlug": "vigilant-kaathar"
-		}'
-	    ])
-	]);
+		}',
+        ]),
+    ]);
 
         $bosses = $this->wow->getBossMasterList();
         $bossId = collect($bosses->get('bosses'))->first()->id;
@@ -126,18 +124,18 @@ class WoWTest extends TestCase
         $this->assertArrayHasKey('id', $response->toArray());
         $this->assertArrayHasKey('name', $response->toArray());
         $this->assertArrayHasKey('urlSlug', $response->toArray());
-	$this->assertEquals($bossId, $response->get('id'));
+        $this->assertEquals($bossId, $response->get('id'));
     }
 
     /** @test */
     public function api_can_fetch_realm_leader_board()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"challenge": [{ "map": { "id": 1763 } }] }'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"challenge": [{ "map": { "id": 1763 } }] }',
+        ]),
+    ]);
 
         $response = $this->wow->getRealmLeaderboard($this->realm);
 
@@ -148,12 +146,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_region_leader_board()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"challenge": [{ "groups": [] }] }'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"challenge": [{ "groups": [] }] }',
+        ]),
+    ]);
 
         $response = $this->wow->getRegionLeaderboard();
 
@@ -164,12 +162,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_a_character()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"name":"%s","class":8,"race":1,"gender":1,"level":120}',$this->character)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"name":"%s","class":8,"race":1,"gender":1,"level":120}', $this->character),
+        ]),
+    ]);
 
         $response = $this->wow->getCharacter($this->realm, $this->character);
 
@@ -185,12 +183,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_a_guild()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"name":"%s","level":25,"side":0,"emblem":{"icon":173,"iconColor":"ff376700"}}',$this->guild)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"name":"%s","level":25,"side":0,"emblem":{"icon":173,"iconColor":"ff376700"}}', $this->guild),
+        ]),
+    ]);
 
         $response = $this->wow->getGuild($this->realm, $this->guild);
 
@@ -205,12 +203,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_guild_members_with_default_fields()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"name":"%s","level":25,"realm":"Arathor","members":[{"character":{"name":"Csuvakka"}}]}',$this->guild)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"name":"%s","level":25,"realm":"Arathor","members":[{"character":{"name":"Csuvakka"}}]}', $this->guild),
+        ]),
+    ]);
 
         $response = $this->wow->getGuildMembers($this->realm, $this->guild);
 
@@ -225,12 +223,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_guild_members_with_different_fields()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"name":"%s","level":25,"realm":"Arathor","members":[{"character":{"name":"Csuvakka"}}]}',$this->guild)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"name":"%s","level":25,"realm":"Arathor","members":[{"character":{"name":"Csuvakka"}}]}', $this->guild),
+        ]),
+    ]);
 
         $response = $this->wow->getGuildMembers($this->realm, $this->guild, ['query' => ['fields' => 'characters']]);
 
@@ -245,12 +243,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_an_item()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"disenchantingSkillRank":0,"description":"Property of Finkle Einhorn, Grandmaster Adventurer"}',$this->itemId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"disenchantingSkillRank":0,"description":"Property of Finkle Einhorn, Grandmaster Adventurer"}', $this->itemId),
+        ]),
+    ]);
 
         $response = $this->wow->getItem($this->itemId);
 
@@ -262,12 +260,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_an_item_set()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"name":"Deep Earth Vestments","items":[76749,76750,76751,76752,76753]}',$this->itemSet)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"name":"Deep Earth Vestments","items":[76749,76750,76751,76752,76753]}', $this->itemSet),
+        ]),
+    ]);
 
         $response = $this->wow->getItemSet($this->itemSet);
 
@@ -281,12 +279,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_mount_master_list()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"mounts":[{"name": "High Priest\'s Lightsworn Seeker","isGround": true}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"mounts":[{"name": "High Priest\'s Lightsworn Seeker","isGround": true}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getMountMasterList();
         $this->assertInstanceOf(Collection::class, $response);
@@ -299,12 +297,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_master_list()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"pets":[{"canBattle":true,"name":"Ash\'ana","family":"beast","stats":{"speed":9}}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"pets":[{"canBattle":true,"name":"Ash\'ana","family":"beast","stats":{"speed":9}}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getPetList();
 
@@ -317,12 +315,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_abilities()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"name":"Toxic Smoke","cooldown":0,"rounds":1}',$this->abilityId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"name":"Toxic Smoke","cooldown":0,"rounds":1}', $this->abilityId),
+        ]),
+    ]);
 
         $response = $this->wow->getPetAbility($this->abilityId);
 
@@ -337,12 +335,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_species()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"speciesId":%d,"petTypeId":9,"creatureId":42078,"name":"Mini Thor"}',$this->speciesId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"speciesId":%d,"petTypeId":9,"creatureId":42078,"name":"Mini Thor"}', $this->speciesId),
+        ]),
+    ]);
 
         $response = $this->wow->getPetSpecies($this->speciesId);
 
@@ -354,12 +352,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_stats()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"speciesId":%d,"breedId":3,"petQualityId":1,"level":1,"health":150,"power":10,"speed":8}',$this->speciesId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"speciesId":%d,"breedId":3,"petQualityId":1,"level":1,"health":150,"power":10,"speed":8}', $this->speciesId),
+        ]),
+    ]);
 
         $response = $this->wow->getPetStats($this->speciesId);
 
@@ -374,17 +372,17 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_stats_on_specific_level()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => sprintf('{"speciesId":%d,"breedId":%d,"petQualityId":%d,"level":%d,"health":150,"power":10,"speed":8}',
-			$this->speciesId,
-			$this->petBreedId,
-			$this->petQualityId,
-			$this->petLevel
-		)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => sprintf('{"speciesId":%d,"breedId":%d,"petQualityId":%d,"level":%d,"health":150,"power":10,"speed":8}',
+            $this->speciesId,
+            $this->petBreedId,
+            $this->petQualityId,
+            $this->petLevel
+        ),
+        ]),
+    ]);
 
         $response = $this->wow->getPetStats($this->speciesId, ['level' => $this->petLevel, 'breedId' => $this->petBreedId, 'qualityId' =>$this->petQualityId]);
 
@@ -402,12 +400,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pvp_leaderboards()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"rows": [{"ranking": 1,"rating": 2707,"name": "Qwilleqwap","realmId": 1301}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"rows": [{"ranking": 1,"rating": 2707,"name": "Qwilleqwap","realmId": 1301}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getLeaderboards($this->pvpBracket);
 
@@ -420,12 +418,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_quest_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"title":"Generosity Abounds","category":"Icecrown","level":80}',$this->questId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"title":"Generosity Abounds","category":"Icecrown","level":80}', $this->questId),
+        ]),
+    ]);
 
         $response = $this->wow->getQuest($this->questId);
 
@@ -437,12 +435,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_realm_status()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"realms": [{"type": "normal","population": "high","name": "Aegwynn"}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"realms": [{"type": "normal","population": "high","name": "Aegwynn"}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getRealmStatus();
 
@@ -455,12 +453,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_a_recipe()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"name":"Precise Strikes","profession":"Enchanting"}',$this->recipeId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"name":"Precise Strikes","profession":"Enchanting"}', $this->recipeId),
+        ]),
+    ]);
 
         $response = $this->wow->getRecipe($this->recipeId);
 
@@ -472,12 +470,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_a_spell()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"name":"Test Spell","range":"20 yd range","castTime":"Instant"}',$this->spellId)
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"name":"Test Spell","range":"20 yd range","castTime":"Instant"}', $this->spellId),
+        ]),
+    ]);
 
         $response = $this->wow->getSpell($this->spellId);
 
@@ -489,12 +487,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_zone_master_list()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"zones": [{"id": 6912,"name": "Auchindoun","urlSlug": "auchindoun","expansionId": 5}] }'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"zones": [{"id": 6912,"name": "Auchindoun","urlSlug": "auchindoun","expansionId": 5}] }',
+        ]),
+    ]);
 
         $response = $this->wow->getZonesMasterList();
 
@@ -508,16 +506,16 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_zone_details()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"zones": [{"id": 6912,"name": "Auchindoun","urlSlug": "auchindoun","expansionId": 5}] }'
-	    ]),
-	    collect([
-	        'code' => 200,
-	        'response' => '{"id": 6912, "name": "Auchindoun","urlSlug": "auchindoun"}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"zones": [{"id": 6912,"name": "Auchindoun","urlSlug": "auchindoun","expansionId": 5}] }',
+        ]),
+        collect([
+            'code' => 200,
+            'response' => '{"id": 6912, "name": "Auchindoun","urlSlug": "auchindoun"}',
+        ]),
+    ]);
 
         $zoneId = $this->wow->getZonesMasterList()->get('zones')[0]->id;
         $response = $this->wow->getZone($zoneId);
@@ -530,12 +528,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_battlegroup_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"battlegroups": [{"name": "Cruelty / Crueldad","slug": "cruelty-crueldad"}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"battlegroups": [{"name": "Cruelty / Crueldad","slug": "cruelty-crueldad"}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getDataBattlegroups();
 
@@ -548,12 +546,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_character_races()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"races":[{"id": 1,"mask": 1,"side": "alliance","name": "Human"}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"races":[{"id": 1,"mask": 1,"side": "alliance","name": "Human"}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getDataCharacterRaces();
 
@@ -566,12 +564,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_character_classes()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"classes":[{"id":1,"mask":1,"powerType":"rage","name":"Warrior"}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"classes":[{"id":1,"mask":1,"powerType":"rage","name":"Warrior"}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getDataCharacterClasses();
 
@@ -584,12 +582,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_character_achievements_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"achievements":[{"id": 92,"achievements":[{"id": 6,"title": "Level 10"}]}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"achievements":[{"id": 92,"achievements":[{"id": 6,"title": "Level 10"}]}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getDataCharacterAchievements();
 
@@ -602,12 +600,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_guild_rewards_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-	        'response' => '{"rewards":[{"minGuildLevel": 0,"minGuildRepLevel": 5,"achievement":{"id": 6626,"title": "Working Better as a Team"}}]}'
-	    ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+            'response' => '{"rewards":[{"minGuildLevel": 0,"minGuildRepLevel": 5,"achievement":{"id": 6626,"title": "Working Better as a Team"}}]}',
+        ]),
+    ]);
 
         $response = $this->wow->getDataGuildRewards();
 
@@ -620,12 +618,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_guild_perks()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"perks":[{"guildLevel": 1,"spell":{"id": 78633}}]}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"perks":[{"guildLevel": 1,"spell":{"id": 78633}}]}',
+            ]),
+    ]);
 
         $response = $this->wow->getDataGuildPerks();
 
@@ -639,12 +637,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_guild_achievements_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"achievements":[{"id": 15088,"achievements":[{"id": 5362,"title": "Everyone Needs a Logo"}]}]}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"achievements":[{"id": 15088,"achievements":[{"id": 5362,"title": "Everyone Needs a Logo"}]}]}',
+            ]),
+    ]);
 
         $response = $this->wow->getDataGuildAchievements();
 
@@ -657,12 +655,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_item_classes_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"classes":[{"class":0,"name":"Consumable","subclasses":[{"subclass":0,"name":"Explosives and Devices"}]}]}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"classes":[{"class":0,"name":"Consumable","subclasses":[{"subclass":0,"name":"Explosives and Devices"}]}]}',
+            ]),
+    ]);
 
         $response = $this->wow->getDataItemClasses();
 
@@ -675,12 +673,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_pet_types_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"petTypes":[{"id": 0,"key": "humanoid","name": "Humanoid","typeAbilityId": 238}]}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"petTypes":[{"id": 0,"key": "humanoid","name": "Humanoid","typeAbilityId": 238}]}',
+            ]),
+    ]);
 
         $response = $this->wow->getDataPetTypes();
 
@@ -693,12 +691,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_talent_data()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"1":{"specs":[{"name":"Arms","role":"DPS"}]}}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"1":{"specs":[{"name":"Arms","role":"DPS"}]}}',
+            ]),
+    ]);
 
         $response = $this->wow->getDataTalents();
 
@@ -711,12 +709,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_can_fetch_the_user_wow_characters()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 200,
-		'response' => '{"characters":[{"name": "Testchar","realm": "Arathor","class": 6,"race": 5}]}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 200,
+        'response' => '{"characters":[{"name": "Testchar","realm": "Arathor","class": 6,"race": 5}]}',
+            ]),
+    ]);
 
         $options = [];
         $response = $this->wow->getProfileCharacters($options, $this->bnet_token);
@@ -727,16 +725,15 @@ class WoWTest extends TestCase
         $this->assertObjectHasAttribute('realm', $response->get('characters')[0]);
     }
 
-
     /** @test */
     public function api_should_fail_if_the_given_URL_is_invalid()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 404,
-	        'response' => '{"status":"nok", "reason": "When in doubt, blow it up. (page not found)"'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 404,
+            'response' => '{"status":"nok", "reason": "When in doubt, blow it up. (page not found)"',
+            ]),
+    ]);
 
         $response = $this->wow->getRecipe('invalid');
         $this->assertInstanceOf(Collection::class, $response);
@@ -761,12 +758,12 @@ class WoWTest extends TestCase
     /** @test */
     public function api_should_fail_if_access_token_is_expired()
     {
-	$this->wow->createMockResponse([
-	    collect([
-	        'code' => 401,
-	        'response' => '{"code": 403,"type": "Forbidden","detail": "Not Authorized"}'
-            ])
-	]);
+        $this->wow->createMockResponse([
+        collect([
+            'code' => 401,
+            'response' => '{"code": 403,"type": "Forbidden","detail": "Not Authorized"}',
+            ]),
+    ]);
 
         $options = [];
         $response = $this->wow->getProfileCharacters($options, $this->bnet_token);
@@ -777,21 +774,22 @@ class WoWTest extends TestCase
     }
 
     /** @test */
-    public function api_should_retry_in_case_of_504() {
+    public function api_should_retry_in_case_of_504()
+    {
         $this->wow->createMockResponse([
-	    collect([
-	        'code' => 504,
-	        'response' => '{"code": "504","type": "Gateway Time-out"}'
-	    ]),
-	    collect([
-	        'code' => 504,
-	        'response' => '{"code": "504","type": "Gateway Time-out"}'
-	    ]),
-	    collect([
-	        'code' => 200,
-	        'response' => sprintf('{"id":%d,"name":"Test Spell","range":"20 yd range","castTime":"Instant"}',$this->spellId)
-	    ])
-	]);
+        collect([
+            'code' => 504,
+            'response' => '{"code": "504","type": "Gateway Time-out"}',
+        ]),
+        collect([
+            'code' => 504,
+            'response' => '{"code": "504","type": "Gateway Time-out"}',
+        ]),
+        collect([
+            'code' => 200,
+            'response' => sprintf('{"id":%d,"name":"Test Spell","range":"20 yd range","castTime":"Instant"}', $this->spellId),
+        ]),
+    ]);
 
         $response = $this->wow->getSpell($this->spellId);
         $this->assertInstanceOf(Collection::class, $response);
@@ -803,21 +801,22 @@ class WoWTest extends TestCase
     }
 
     /** @test */
-    public function api_should_fail_after_maximum_number_of_retries() {
+    public function api_should_fail_after_maximum_number_of_retries()
+    {
         $this->wow->createMockResponse([
-	    collect([
-	        'code' => 504,
-	        'response' => '{"code": "504","type": "Gateway Time-out"}'
-	    ]),
-	    collect([
-	        'code' => 504,
-	        'response' => '{"code": "504","type": "Gateway Time-out"}'
-	    ]),
-	    collect([
-	        'code' => 504,
-	        'response' => '{"code": "504","type": "Gateway Time-out"}'
-	    ])
-	]);
+        collect([
+            'code' => 504,
+            'response' => '{"code": "504","type": "Gateway Time-out"}',
+        ]),
+        collect([
+            'code' => 504,
+            'response' => '{"code": "504","type": "Gateway Time-out"}',
+        ]),
+        collect([
+            'code' => 504,
+            'response' => '{"code": "504","type": "Gateway Time-out"}',
+        ]),
+    ]);
 
         $response = $this->wow->getSpell($this->spellId);
 
@@ -825,6 +824,5 @@ class WoWTest extends TestCase
         $this->assertArrayHasKey('error', $response->toArray());
         $this->assertArrayHasKey('code', $response->get('error')->toArray());
         $this->assertEquals(504, $response->get('error')->get('code'));
-
     }
 }

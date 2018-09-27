@@ -169,24 +169,24 @@ class BattlenetHttpClient
                     $statusCode = $e->getResponse()->getStatusCode();
                     $reasonPhrase = $e->getResponse()->getReasonPhrase();
                 } else {
-                  $statusCode = 909;
-                  $reasonPhrase = 'Unable to resolve API domain';
-              }
-          }
-      } while ($attempts < $maxAttempts);
+                    $statusCode = 909;
+                    $reasonPhrase = 'Unable to resolve API domain';
+                }
+            }
+        } while ($attempts < $maxAttempts);
 
-      if ($statusCode and $reasonPhrase) {
-        return collect([
+        if ($statusCode and $reasonPhrase) {
+            return collect([
             'error' => collect([
                 'code' => $statusCode,
                 'message' => $reasonPhrase,
                 'attempts' => $attempts,
             ]),
         ]);
-    }
+        }
 
-    throw $e;
-}
+        throw $e;
+    }
 
     /**
      * Cache the api response data if cache set to true in config file.
